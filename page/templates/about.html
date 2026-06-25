@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title%}
+دیجی چرا - درباره ما
+{% endblock %}
+
+{% block content %}
+
+
+<body class="rtl">
+
+    <section class="breadcrumb_part">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb_iner">
+                        <h2>به دنیای عجایب تجارت خوش آمدید!</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about_us padding_top">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="about_us_content">
+                        <h5>هدف ما</h5>
+                        <h3>هدف ما در این مجموعه، کاوش در تاریخ بی‌سابقه خرید و فروش است. ما لیستی از عجیب‌ترین، جنجالی‌ترین و گاهی اوقات احمقانه‌ترین محصولات و خدماتی را گردآوری کرده‌ایم که تا به امروز معامله شده‌اند</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+ 
+    <section class="feature_part section_padding">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-lg-6">
+                    <div class="feature_part_tittle">
+                        <h3>اینجا داستانِ «نایاب‌ترین‌ها» است</h3>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="feature_part_content">
+                        <p>از خرید روح ملکه تا قایق کاغذی هم قمیت خونه ویلایی!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single_feature_part">
+                        <img src="{% static "img/icon/feature_icon_1.svg" %}" alt="#">
+                        <h4>پشتیبانی کارت های اعتباری</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single_feature_part">
+                        <img src="{% static "img/icon/feature_icon_2.svg" %}" alt="#">
+                        <h4>سفارش آنلاین</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single_feature_part">
+                        <img src="{% static "img/icon/feature_icon_3.svg" %}" alt="#">
+                        <h4>تحویل رایگان</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single_feature_part">
+                        <img src="{% static "img/icon/feature_icon_4.svg" %}" alt="#">
+                        <h4>محصولات همراه با هدیه</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+  
+    <section class="client_review">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="client_review_slider owl-carousel" dir="ltr">
+                        <div class="single_client_review" dir="rtl">
+                            <div class="client_img">
+                                <img src="{% static "img/client.png" %}" alt="#">
+                            </div>
+                                <p>بعد استفاده از صابون سیدنی احساس بهتری نسبت به خودم دارم.</p>
+                                <h5>- رضا محمدی</h5>
+                            </div>
+                            <div class="single_client_review" dir="rtl">
+                                <div class="client_img">
+                                    <img src="{% static 'img/client_1.png' %}" alt="#">
+                                </div>
+                                <p>دستگاه فوفو رو پیشنهاد میکنم به خصوص برای چای عالیه</p>
+                                <h5>- امیر امیری</h5>
+                            </div>
+                            <div class="single_client_review" dir="rtl">
+                                <div class="client_img">
+                                    <img src="{% static 'img/client_2.png' %}" alt="#">
+                                </div>
+                                <p>تو خرید دستمال کاغذی اسکارلت شک نکنید.</p>
+                                <h5>- محمد موسوی</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

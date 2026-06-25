@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title%}
+دیجی چرا - خانه
+{% endblock %}
+
+{% block content %}
+
+    <section class="banner_part">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-5">
+                    <div class="banner_text">
+                        <div class="banner_text_iner">
+                            <h1> Digichara </h1>
+                            <hr>
+                            <p>سایتی برای خرید احمقانه‌ترین و عجیب‌ترین محصولات تاریخ</p>
+                            <a href="" class="btn_1">مشاهده محصولات</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="banner_img" >
+            <img src="{% static "img/banner.png" %}" alt="#" class="img-fluid" >
+            <img src="{% static "img/banner_pattern.png" %}" alt="#" class="pattern_img img-fluid">
+        </div>
+    </section>
+
+    <section class="single_product_list">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="single_product_iner">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="single_product_img">
+                                    <img src="{% static 'img/single_product_1.png' %}" class="img-fluid" alt="#">
+                                    <img src="{% static 'img/product_overlay.png' %}" alt="#" class="product_overlay img-fluid">
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-sm-6">
+                                <div class="single_product_content">
+                                    <h2> <a href="single-product.html"></a> لوکس ترین لوازم آرایشی و بهداشتی از برند های مطرح دنیا</h2>
+                                    <a href="" class="btn_3">دیدن محصولات</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="single_product_iner">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="single_product_img">
+                                    <img src="{% static "img/single_product_2.png" %}" class="img-fluid" alt="#">
+                                    <img src="{% static "img/product_overlay.png" %}" alt="#" class="product_overlay img-fluid">
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-sm-6">
+                                <div class="single_product_content">
+                                    <h2>گجت های هوشمند برای انجام کارهای روزمره از فوت کردن تا نگاه کردن </h2>
+                                    <a href="" class="btn_3">دیدن محصولات</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="single_product_iner">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="single_product_img">
+                                    <img src="{% static "img/single_product_3.png" %}" class="img-fluid" alt="#">
+                                    <img src="{% static "img/product_overlay.png" %}" alt="#" class="product_overlay img-fluid">
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-sm-6">
+                                <div class="single_product_content">
+                                    <h2> <a href="single-product.html">پیشرفته ترین و مدرن ترین دستگاه های بروز دنیا برای کسب و کار های متوسط و بزرگ</a> </h2>
+                                    <a href="" class="btn_3">دیدن محصولات</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="client_review " style="direction: ltr">
+        <div class="container" >
+            <div class="row justify-content-center" >
+                <div class="col-lg-8">
+                    <div class="client_review_slider owl-carousel " >
+                        <div class="single_client_review" dir="rtl" >
+                            <div class="client_img" >
+                                <img src="{% static "img/client.png" %}" alt="#">
+                            </div>
+                        <p>بعد استفاده از صابون سیدنی احساس بهتری نسبت به خودم دارم.</p>
+                        <h5>- رضا محمدی</h5>
+                    </div>
+                    <div class="single_client_review" dir="rtl">
+                        <div class="client_img">
+                            <img src="{% static 'img/client_3.png' %}" alt="#">
+                        </div>
+                            <p>عدم فعالیت بعد خرید از فروشگاه لوازم خودکشی</p>
+                            <h5>- مرحوم اکبر اکبری</h5>
+                        </div>
+                        <div class="single_client_review" dir="rtl">
+                            <div class="client_img">
+                                <img src="{% static 'img/client_1.png' %}" alt="#">
+                            </div>
+                            <p>دستگاه فوفو رو پیشنهاد میکنم به خصوص برای چای عالیه</p>
+                            <h5>- امیر امیری</h5>
+                        </div>
+                        <div class="single_client_review" dir="rtl">
+                            <div class="client_img">
+                                <img src="{% static 'img/client_2.png' %}" alt="#">
+                            </div>
+                            <p>تو خرید دستمال کاغذی اسکارلت شک نکنید.</p>
+                            <h5>- محمد موسوی</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+ 
+    <section class="feature_part section_padding">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-lg-6">
+                    <div class="feature_part_tittle">
+                        <h3>از خرید روح ملکه تا دعای گشایش بخت</h3>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="feature_part_content">
+                        <p> شما در این فروشگاه میتوانید انواع ابزارآلات  خودکشی را از برند های مطرح جهان تهیه کنید.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single_feature_part">
+                        <img src="{% static "img/icon/feature_icon_1.svg" %}" alt="#">
+                        <h4>پشتیبانی کارت های اعتباری</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single_feature_part">
+                        <img src="{% static "img/icon/feature_icon_2.svg" %}" alt="#">
+                        <h4>سفارش آنلاین</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single_feature_part">
+                        <img src="{% static "img/icon/feature_icon_3.svg" %}" alt="#">
+                        <h4>تحویل رایگان</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single_feature_part">
+                        <img src="{% static "img/icon/feature_icon_4.svg" %}" alt="#">
+                        <h4>محصولات همراه با جایزه</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+{% endblock %}
