@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block extra_meta %}{% endblock %}
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="icon" href="{% static "img/favicon.png" %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap4-rtl.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/swiper.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slick.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lightslider.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
+    <link rel="stylesheet" href="{% static 'css/price_rangs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="rtl">
+    
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% include 'navbar.html' %}
+    {% block content %}{% endblock %}
+
+    {% block extra_js %}{% endblock %}
+
+        <section class="subscribe_part section_padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="subscribe_part_content" style="direction: rtl">
+                        <h2>به روز رسانی و مطالب پیشرفته!</h2>
+                        <p>با وارد کردن ایمیل خود در فیلد زیر اخبار و آخرین بروزرسانی ها رو دریافت کنید.</p>
+                        <div class="subscribe_form">
+                            <input type="email" placeholder="ایمیل خود را وارد کنید">
+                            <a href="#" class="btn_1">تایید</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include 'footer.html' %}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchForm = document.querySelector('.search-inner');
+        const searchInput = document.getElementById('search_input');
+        const closeBtn = document.getElementById('close_search');
+
+        if (searchForm && searchInput) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const query = searchInput.value.trim();
+                if (query) {
+                    let hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'q';
+                    hiddenInput.value = query;
+                    searchForm.appendChild(hiddenInput);
+                    searchForm.action = ""; 
+                    searchForm.method = "GET";
+                    searchForm.submit();
+                } else {
+                    searchForm.action = "";
+                    searchForm.method = "GET";
+                    searchForm.submit();
+                }
+            });
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    searchInput.value = '';
+                });
+            }
+        }
+    });
+    </script>
+    <script src="{% static 'js/jquery-1.12.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/swiper.min.js' %}"></script>
+    <script src="{% static 'js/swiper_custom.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/slick.min.js' %}"></script>
+    <script src="{% static 'js/lightslider.min.js' %}"></script>
+    <script src="{% static 'js/mixitup.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.js' %}"></script>
+    <script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'js/price_rangs.js' %}"></script>
+    <script src="{% static 'js/waypoints.min.js' %}"></script>
+    <script src="{% static 'js/jquery.counterup.min.js' %}"></script>
+    <script src="{% static 'js/cells-by-column.js' %}"></script>
+    <script src="{% static 'js/stellar.js' %}"></script>
+    <script src="{% static 'js/jquery.downCount.js' %}"></script>
+    <script src="{% static 'js/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'js/jquery.form.js' %}"></script>
+    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'js/gmaps.min.js' %}"></script>
+    <script src="{% static 'js/aos.js' %}"></script>
+    <script src="{% static 'js/contact.js' %}"></script>
+    <script src="{% static 'js/mail-script.js' %}"></script>
+    <script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
+    <script src="{% static 'js/theme.js' %}"></script>
+</body>
+</html>
