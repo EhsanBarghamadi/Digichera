@@ -9,9 +9,10 @@ DEBUG = config('DEBUG', True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 INSTALLED_APPS += [
-    # Lcal Apps
+    # Local Apps
     'page',
     'core',
+    'user',
 ]
 
 DATABASES = {
@@ -30,4 +31,6 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+AUTH_USER_MODEL = 'user.CustomUser'
 
