@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+دیجی چرا - ورود
+{% endblock title %}
+
+{% block content %}
+
+    <section class="breadcrumb_part">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb_iner">
+                        <h2>ورود</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="login_part section_padding ">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6">
+                    <div class="login_part_text text-center">
+                        <div class="login_part_text_iner">
+                            <h2>اولین خرید شماست؟</h2>
+                            <p>برای تجربه خرید راحت تر حساب کاربری بسازید</p>
+                            <a href="{% url 'user:register' %}" class="btn_3">ساخت حساب کاربری</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="login_part_form">
+                        <div class="login_part_form_iner">
+                            <h3>خوش آمدید ! <br>
+                                لطفا وارد شوید</h3>
+                            <form class="row contact_form" action="#" method="post" novalidate="novalidate">
+                                
+                                {% csrf_token %}
+
+                                <div class="col-md-12 form-group p_star">
+                                    {{ form.phone }}
+                                    {% if form.phone.errors %}
+                                        <div class="text_danger">{{ form.phone.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    {{ form.password }}
+                                    {% if form.password.errors %}
+                                        <div class="text_danger">{{ form.password.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-12 form-group">
+                                    <div class="creat_account d-flex align-items-center">
+                                        <input type="checkbox" id="f-option" name="selector">
+                                        <label for="f-option">مرا به خاطر بسپار</label>
+                                    </div>
+                                    <button type="submit" value="submit" class="btn_3">
+                                        ورود
+                                    </button>
+                                    <a class="lost_pass" href="#">رمز عبور را فراموش کرده اید؟</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+    
+{% endblock content %}

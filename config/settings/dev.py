@@ -22,6 +22,10 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 MEDIA_URL = 'media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -34,3 +38,6 @@ STATICFILES_DIRS = [
 
 AUTH_USER_MODEL = 'user.CustomUser'
 
+LOGIN_URL = 'user:login'
+LOGIN_REDIRECT_URL = 'page:home'
+LOGOUT_REDIRECT_URL = 'page:home'

@@ -41,6 +41,18 @@ class CustomUserManager(BaseUserManager):
     
 
 class CustomUser(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
+    class Roles(models.TextChoices):
+        CUSTOMER = 'customer', 'خریدار'
+        SELLER = 'seller', 'فروشنده'
+        STAFF = 'staff', 'ادمین'
+
+    role = models.CharField(
+        verbose_name='نقش',
+        max_length=10,
+        choices=Roles.choices,
+        default=Roles.CUSTOMER
+    )
+
     phone = models.CharField(
         verbose_name='شماره تماس',
         max_length=20,

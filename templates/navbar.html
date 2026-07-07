@@ -49,12 +49,12 @@
 
                                         {% endif %}
                                             
-                                        <a class="dropdown-item" href="">خروج</a>
+                                        <a class="dropdown-item" href="{% url 'user:logout' %}">خروج</a>
                                     {% else %}
-                                        <a class="dropdown-item" href=""> 
+                                        <a class="dropdown-item" href="{% url 'user:login' %}"> 
                                             ورود
                                         </a>
-                                        <a class="dropdown-item" href="">ثبت نام</a>
+                                        <a class="dropdown-item" href="{% url 'user:register' %}">ثبت نام</a>
                                     {% endif %}
                                 </div>
                             </li>
