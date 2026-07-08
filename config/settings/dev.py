@@ -9,10 +9,13 @@ DEBUG = config('DEBUG', True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 INSTALLED_APPS += [
+    # Third-party Apps
+    'localflavor',
     # Local Apps
     'page',
     'core',
     'user',
+    'account',
 ]
 
 DATABASES = {
