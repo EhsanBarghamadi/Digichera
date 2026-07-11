@@ -82,6 +82,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
         help_text='مربوط به دسترسی به پنل ادمین'
     )
 
+    @property
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
+    
     class Meta:
         verbose_name = 'کاربر'
         verbose_name_plural = 'کاربرها'
