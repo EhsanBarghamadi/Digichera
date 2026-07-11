@@ -43,7 +43,7 @@ class Profile(TimeStampedModel):
         verbose_name_plural = 'پروفایل ها'
 
     def __str__(self):
-        full_name = f"{self.user.first_name} {self.user.last_name}".strip()
+        return self.user.full_name
 
 
     def save(self, *args, **kwargs):

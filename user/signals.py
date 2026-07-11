@@ -7,7 +7,7 @@ from .models import CustomUser
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         from account.models import Profile
-        Profile(object.create(user=instance))
+        Profile.objects.create(user=instance)
         print(f"Profile created for {instance.full_name}")
 
 @receiver(post_save, sender=CustomUser)
