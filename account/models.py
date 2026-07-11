@@ -47,7 +47,20 @@ class Profile(TimeStampedModel):
 
 
     def save(self, *args, **kwargs):
+        should_process_avatar = False
+
         if self.avatar:
+            if not self.pk:
+                should_process_avatar = True
+            else:
+                try:
+                    old_instance = self.__class__.objects.get(pk=self.pk)
+                    if old_instance.avatar != self.avatar:
+                        should_process_avatar = True
+                except self.__class__.DoesNotExist:
+                    should_process_avatar = True
+
+        if should_process_avatar and self.avatar:
             img = Image.open(self.avatar)
             if img.mode != 'RGB':
                 img = img.convert('RGB')

@@ -26,12 +26,19 @@ class SluggedModel(TimeStampedModel):
         abstract = True
 
     def get_source_field(self):
-        raise NotImplementedError("Subclasses must implement get_slug_source_field()")
+        raise NotImplementedError("Subclasses must implement get_source_field()")
     
     def save(self, *args, **kwargs):
         if not self.slug:
             source_field_name = self.get_source_field()
             source_value = getattr(self, source_field_name, '')
             if source_value:
-                self.slug = slugify(source_value, allow_unicode=True)
+                base_slug = slugify(source_value, allow_unicode=True)
+                slug = base_slug
+                counter = 1
+                model_class = self.__class__
+                while model_class.objects.filter(slug=slug).exists():
+                    slug = f'{base_slug}-{counter}'
+                    counter += 1
+                self.slug = slug
         super().save(*args, **kwargs)

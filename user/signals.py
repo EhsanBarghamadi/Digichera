@@ -9,9 +9,3 @@ def create_user_profile(sender, instance, created, **kwargs):
         from account.models import Profile
         Profile.objects.create(user=instance)
         print(f"Profile created for {instance.full_name}")
-
-@receiver(post_save, sender=CustomUser)
-def save_user_profile(sender, instance, **kwargs):
-    if hasattr(instance, 'profile'):
-        instance.profile.save()
-        print(f'Profile saved for {instance.full_name}')
