@@ -34,21 +34,11 @@
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
                                     
                                     {% if user.is_authenticated %}
-                                        
-                                        {% if user.profile.role == 'seller' %}
 
-                                            <a class="dropdown-item" href=""> 
-                                                پروفایل
-                                            </a>
-                                            
-                                        {% elif user.profile.role == 'customer' %}
-                                        
-                                            <a class="dropdown-item" href=""> 
-                                                پروفایل
-                                            </a>
-
-                                        {% endif %}
-                                            
+                                        <a class="dropdown-item" href="{% url 'account:profile' %}"> 
+                                            پروفایل
+                                        </a>
+                                         
                                         <a class="dropdown-item" href="{% url 'user:logout' %}">خروج</a>
                                     {% else %}
                                         <a class="dropdown-item" href="{% url 'user:login' %}"> 

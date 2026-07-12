@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    دیجی چرا - پروفایل
+{% endblock title %}
+    
+
+{% block content %}
+{% if user.is_authenticated %}
+    {% include 'profile_info.html' %}
+{% endif %}
+
+
+{% comment %} {% if user.is_authenticated %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <h3 class="mb-4 text-center border-bottom pb-2">سفارشات ثبت شده</h3>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {% if user.profile.orders.exists %}
+                        {% for order in user.profile.orders.all %}
+                        <div class="row mb-3 border-bottom pb-3">
+                            <div class="col-12">
+                                <label class="font-weight-bold text-muted small">شماره سفارش:</label>
+                                <p class="mb-0">#{{ order.id }}</p>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">مبلغ کل:</label>
+                                    <p class="mb-0">{{ order.total_price|floatformat:0 }} تومان</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">تاریخ ثبت سفارش:</label>
+                                    <p class="mb-0">  {{ order.created_at|date:"Y/m/d H:i" }}  </p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">وضعیت:</label>
+                                    <p class="mb-0">
+                                        {% if order.status == 'pending' %}
+                                            <span class="badge bg-success">پرداخت شده</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">در انتظار پرداخت</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                        {% empty %}
+                        <p class="text-center text-muted">شما هنوز سفارشی ثبت نکرده‌اید.</p>
+                        {% endfor %}
+                    {% else %}
+                         <p class="text-center text-muted">شما هنوز سفارشی ثبت نکرده‌اید.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %} {% endcomment %}
+
+{% endblock content %}
+    

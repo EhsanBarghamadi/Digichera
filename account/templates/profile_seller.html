@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    دیجی چرا - پروفایل
+{% endblock title %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    {% include 'profile_info.html' %}
+{% endif %}
+
+{% comment %} 
+{% if user.profile.store %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <h3 class="mb-4 text-center border-bottom pb-2">اطلاعات فروشگاه</h3>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md-4 text-center mb-3 mb-md-0">
+                            <div class="mb-3">
+{% if user.profile.store.store_logo %}
+                                    <img src="{{ user.profile.store.store_logo.url }}" alt="لوگو فروشگاه" class="img-fluid rounded-circle border border-light shadow-sm" width="150" height="150" style="object-fit: cover;">
+                                {% else %}
+                                    <img src="{% static 'img/elements/s.jpg' %}" alt="پروفایل پیش‌فرض" class="img-fluid rounded-circle border border-light shadow-sm" width="150" height="150" style="object-fit: cover;">
+                                {% endif %}
+                            </div>
+                        </div> 
+                        <div class="col-12 col-md-8">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">نام فروشگاه:</label>
+                                    <p class="mb-0">{{ user.profile.store.store_name|default:"-" }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">شماره تماس:</label>
+                                    <p class="mb-0">{{ user.profile.store.store_phone|default:"-" }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">تاریخ ایجاد:</label>
+                                    <p class="mb-0">{{ user.profile.store.created_at|date:"Y/m/d" }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">تاریخ آخرین بروزرسانی:</label>
+                                    <p class="mb-0">{{ user.profile.store.updated_at|date:"Y/m/d" }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-group text-center">
+                                <a href="{% url 'product:create_product' %}" class="btn_3">
+                                    افزودن محصول
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if user.is_authenticated %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <h3 class="mb-4 text-center border-bottom pb-2">سفارشات ثبت شده</h3>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {% if user.profile.orders.exists %}
+                        {% for order in user.profile.orders.all %}
+                        <div class="row mb-3 border-bottom pb-3">
+                            <div class="col-12">
+                                <label class="font-weight-bold text-muted small">شماره سفارش:</label>
+                                <p class="mb-0">#{{ order.id }}</p>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">مبلغ کل:</label>
+                                    <p class="mb-0">{{ order.total_price }} تومان</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">تاریخ ثبت سفارش:</label>
+                                    <p class="mb-0">{{ order.created_at|date:"Y/m/d H:i" }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">وضعیت:</label>
+                                    <p class="mb-0">
+                                        {% if order.status == 'pending' %}
+                                            <span class="badge bg-success">پرداخت شده</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">در انتظار پرداخت</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                        {% empty %}
+                        <p class="text-center text-muted">شما هنوز سفارشی ثبت نکرده‌اید.</p>
+                        {% endfor %}
+                    {% else %}
+                         <p class="text-center text-muted">شما هنوز سفارشی ثبت نکرده‌اید.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if user.is_authenticated %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <h3 class="mb-4 text-center border-bottom pb-2">محصولات فروشگاه شما</h3>
+            <h5 class="mb-4 text-center border-bottom pb-2">برای ویرایش محصولات روی نام آنها کلیک کنید.</h5>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {% if user.profile.store.products.exists %}
+                        {% for product in user.profile.store.products.all %}
+                        <div class="row mb-3 border-bottom pb-3">
+                            <div class="col-12">
+                                <label class="font-weight-bold text-muted small">نام محصول:</label>
+                                <a href="{% url 'product:product_edit'  product.id %}"><p class="mb-0">{{ product.name }}</p></a>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">تعداد موجودی:</label>
+                                    <p class="mb-0">{{ product.stock }} </p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">قیمت:</label>
+                                    <p class="mb-0">{{ product.price|floatformat:0 }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">وضعیت:</label>
+                                    <p class="mb-0">
+                                        {% if product.is_active %}
+                                            <span class="badge bg-success">فعال</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">غیر فعال</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                        {% empty %}
+                        <p class="text-center text-muted">شما هنوز محصولی ثبت نکرده اید.</p>
+                        {% endfor %}
+                    {% else %}
+                         <p class="text-center text-muted">شما هنوز محصولی ثبت نکرده اید.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %} {% endcomment %}
+
+{% endblock content %}

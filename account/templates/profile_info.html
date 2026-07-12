@@ -1,0 +1,68 @@
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <h3 class="mb-4 text-center border-bottom pb-2">پروفایل کاربری</h3>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md-4 text-center mb-3 mb-md-0">
+                            <div class="mb-3">
+                                {% if user.profile.avatar %}
+                                    <img src="{{ user.profile.avatar.url }}" alt="عکس پروفایل" class="img-fluid rounded-circle border border-light shadow-sm" width="150" height="150" style="object-fit: cover;">
+                                {% else %}
+                                    <img src="{% static 'img/elements/d.jpg' %}" alt="پروفایل پیش‌فرض" class="img-fluid rounded-circle border border-light shadow-sm" width="150" height="150" style="object-fit: cover;">
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-8">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">نام:</label>
+                                    <p class="mb-0">{{ user.first_name|default:"-" }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">نام خانوادگی:</label>
+                                    <p class="mb-0">{{ user.last_name|default:"-" }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">کد پستی:</label>
+                                    {% if user.profile.postal_code %}
+                                        <p class="mb-0">{{ user.profile.postal_code }}</p>
+                                    {% else %}
+                                        <p class="text-muted small mb-0">کد پستی برای شما ثبت نشده</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">آدرس:</label>
+                                    {% if user.profile.location %}
+                                        <p class="mb-0">{{ user.profile.location }}</p>
+                                    {% else %}
+                                        <p class="text-muted small mb-0">آدرسی ثبت نشده است.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-12 form-group">
+                                <a href="{% url 'account:profile_edit' %}" class="btn_3">
+                                    ویرایش / تکمیل اطلاعات
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
