@@ -16,7 +16,8 @@ INSTALLED_APPS += [
     'core',
     'user',
     'account',
-    'store'
+    'store',
+    'product',
 ]
 
 DATABASES = {

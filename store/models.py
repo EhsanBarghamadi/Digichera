@@ -1,10 +1,10 @@
 import os
 from io import BytesIO
+from PIL import Image
 
 from django.db import models
 from django.conf import settings
 from django.core.files.base import ContentFile
-from PIL import Image
 
 from core.models import SluggedModel
 from .validators import validate_file_size
@@ -22,7 +22,7 @@ class Store(SluggedModel):
     )
     store_logo = models.ImageField(
         verbose_name='لوگوی فروشگاه',
-        upload_to='store_logo/',
+        upload_to='store_logo/%Y/%m/%d/',
         validators=[validate_file_size],
         blank=True,
         null=True
