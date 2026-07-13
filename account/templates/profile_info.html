@@ -1,4 +1,4 @@
-<div class="container my-5">
+{% load static %} <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-12 col-md-8 col-lg-6">
             <h3 class="mb-4 text-center border-bottom pb-2">پروفایل کاربری</h3>
@@ -8,6 +8,7 @@
                     <div class="row align-items-center">
                         <div class="col-12 col-md-4 text-center mb-3 mb-md-0">
                             <div class="mb-3">
+                                
                                 {% if user.profile.avatar %}
                                     <img src="{{ user.profile.avatar.url }}" alt="عکس پروفایل" class="img-fluid rounded-circle border border-light shadow-sm" width="150" height="150" style="object-fit: cover;">
                                 {% else %}

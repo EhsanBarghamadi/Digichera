@@ -10,8 +10,7 @@
     {% include 'profile_info.html' %}
 {% endif %}
 
-{% comment %} 
-{% if user.profile.store %}
+{% if user.store %}
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-12 col-md-8 col-lg-6">
@@ -21,8 +20,8 @@
                     <div class="row align-items-center">
                         <div class="col-12 col-md-4 text-center mb-3 mb-md-0">
                             <div class="mb-3">
-{% if user.profile.store.store_logo %}
-                                    <img src="{{ user.profile.store.store_logo.url }}" alt="لوگو فروشگاه" class="img-fluid rounded-circle border border-light shadow-sm" width="150" height="150" style="object-fit: cover;">
+                                {% if user.store.store_logo %}
+                                    <img src="{{ user.store.store_logo.url }}" alt="لوگو فروشگاه" class="img-fluid rounded-circle border border-light shadow-sm" width="150" height="150" style="object-fit: cover;">
                                 {% else %}
                                     <img src="{% static 'img/elements/s.jpg' %}" alt="پروفایل پیش‌فرض" class="img-fluid rounded-circle border border-light shadow-sm" width="150" height="150" style="object-fit: cover;">
                                 {% endif %}
@@ -32,29 +31,42 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <label class="font-weight-bold text-muted small">نام فروشگاه:</label>
-                                    <p class="mb-0">{{ user.profile.store.store_name|default:"-" }}</p>
+                                    <p class="mb-0">{{ user.store.store_name|default:"-" }}</p>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <label class="font-weight-bold text-muted small">شماره تماس:</label>
-                                    <p class="mb-0">{{ user.profile.store.store_phone|default:"-" }}</p>
+                                    <p class="mb-0">{{ user.store.store_phone|default:"-" }}</p>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <label class="font-weight-bold text-muted small">تاریخ ایجاد:</label>
-                                    <p class="mb-0">{{ user.profile.store.created_at|date:"Y/m/d" }}</p>
+                                    <p class="mb-0">{{ user.store.created_at|date:"Y/m/d" }}</p>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <label class="font-weight-bold text-muted small">تاریخ آخرین بروزرسانی:</label>
-                                    <p class="mb-0">{{ user.profile.store.updated_at|date:"Y/m/d" }}</p>
+                                    <p class="mb-0">{{ user.store.updated_at|date:"Y/m/d" }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">وضعیت فروشگاه:</label>
+                                    
+                                    {% if user.store.is_active == True %}
+                                        <p class="mb-0"> ✅ فروشگاه فعال</p>
+                                    {% else %}
+                                        <p class="mb-0">⛔ فروشگاه غیر فعال</p>
+
+                                    {% endif %}
+                                        
                                 </div>
                             </div>
                             <div class="col-md-12 form-group text-center">
-                                <a href="{% url 'product:create_product' %}" class="btn_3">
+                                <a href="" class="btn_3">
                                     افزودن محصول
                                 </a>
                             </div>
@@ -65,9 +77,33 @@
         </div>
     </div>
 </div>
+{% else %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <h3 class="mb-4 text-center border-bottom pb-2">شما فروشگاهی ایجاد نکردید</h3>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md-4 text-center mb-3 mb-md-0">
+                            <div class="mb-3">
+                            <div class="col-md-12 form-group text-center">
+                                <a href="{% url 'store:create' %}" class="btn_3">
+                                   ایجاد فروشگاه
+                                </a>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
 {% endif %}
 
-{% if user.is_authenticated %}
+{% comment %} {% if user.is_authenticated %}
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-12 col-md-8 col-lg-6">

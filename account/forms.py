@@ -4,7 +4,15 @@ from localflavor.ir.forms import IRPostalCodeField
 from .models import Profile
 
 class ProfileForm(forms.ModelForm):
-    postal_code = IRPostalCodeField()
+    postal_code = IRPostalCodeField(
+        max_length=10,
+        min_length=10,
+        label='کد پستی',
+        widget=forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'کد پستی خود را وارد کنید',
+        }),
+    )
     
     class Meta:
         model = Profile
@@ -12,7 +20,6 @@ class ProfileForm(forms.ModelForm):
         labels = {
             'avatar': 'تصویر پروفایل',
             'location': 'آدرس محل سکونت',
-            'postal_code': 'کد پستی ۱۰ رقمی',
         }
         widgets = {
             'avatar': forms.FileInput(attrs={
@@ -22,8 +29,4 @@ class ProfileForm(forms.ModelForm):
                 'class': 'single-textarea',
                 'placeholder': 'آدرس خود را وارد کنید',
             }),
-            'postal_code': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'کد پستی خود را وارد کنید',
-            })
         }

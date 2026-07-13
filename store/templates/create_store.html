@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    دیجی چرا - ساخت فروشگاه
+{% endblock title %}
+    
+
+{% block content %}
+{% if user.is_authenticated %}
+    <section class="login_part section_padding ">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6">
+                    <div class="login_part_text text-center">
+                        <div class="login_part_text_iner">
+							<h2> ساخت فروشگاه </h2>
+							<h2> {{ user.first_name }}  {{ user.last_name }} </h2>
+							<hr>
+                            <p>لطفا برای ساخت فروشگاه خود اطلاعات خواسته شده رو وارد کنید.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="login_part_form">
+                        <div class="login_part_form_iner">
+							
+                            <h3> لطفا اطلاعات زیر را تکمیل کنید.</h3>
+
+                            <form class="row contact_form" action="#" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <div class="col-md-12 form-group p_star">
+                                    {{ form.store_logo.label_tag }}
+                                    {{ form.store_logo }}
+                                    {% if form.store_logo.errors %}
+                                        <div class="text-danger">{{ form.store_logo.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    {{ form.store_name.label_tag }}
+                                    {{ form.store_name }}
+                                    {% if form.store_name.errors %}
+                                        <div class="text-danger">{{ form.store_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    {{ form.store_phone.label_tag }}
+                                    {{ form.store_phone }}
+                                    {% if form.store_phone.errors %}
+                                        <div class="text-danger">{{ form.store_phone.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-12 form-group">
+                                    <button type="submit" value="submit" class="btn_3">
+                                        ثبت اطلاعات
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}
+{% endblock content %}

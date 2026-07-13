@@ -37,6 +37,16 @@
                             <form class="row contact_form" action="#" method="post" novalidate="novalidate">
                                 {% csrf_token %}
 
+                                {% if form.non_field_errors %}
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger text-right" style="text-align: right;">
+                                            {% for error in form.non_field_errors %}
+                                                <p class="mb-0">{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
                                 <div class="col-md-12 form-group p_star">
                                     {{ form.phone }}
                                     {% if form.phone.errors %}
