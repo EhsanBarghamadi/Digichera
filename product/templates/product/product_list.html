@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+دیجی چرا - لیست محصولات
+{% endblock title %}
+    
+
+{% block content %}
+<section class="breadcrumb_part">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb_iner">
+                    <h2>لیست محصولات</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="product_list section_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="product_sidebar">
+                    <div class="single_sedebar">
+                        <form action="" method="get">
+                            <input type="text" name="q" placeholder="جست و جو">
+                            <i class="ti-search"></i>
+                        </form>
+                    </div>
+                    <div class="single_sedebar">
+                        <div class="select_option">
+                            <div class="select_option_list">دسته ها <i class="right fas fa-caret-down"></i> </div>
+                            <div class="select_option_dropdown">
+                                {% for category in categories %}
+                                    <p><a href="">{{ category.name }}</a></p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="product_list">
+                    <div class="row">
+                        {% for product in products %}
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="single_product_item">
+                                    
+                                    <a href="{% url 'product:product_detail' product.slug %}">
+                                        {% if product.primary_image %}
+                                        <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="img-fluid">
+                                        {% else %}
+                                        <img src="https://via.placeholder.com/300x200?text=No+Image" alt="No Image" class="img-fluid">
+                                        {% endif %}
+                                        <h3> {{ product.name }} </h3>
+                                        <p>نام فروشگاه: {{ product.store.store_name }} </p>
+                                        <p> قیمت: {{ product.price }} تومان</p>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="load_more_btn text-center">
+                        <a href="#" class="btn_3">جزئیات بیشتر</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="client_review">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="client_review_slider owl-carousel" dir="ltr">
+                    <div class="single_client_review" dir="rtl">
+                        <div class="client_img">
+                            <img src="{% static 'img/client.png' %}" alt="#">
+                        </div>
+                        <p>بعد استفاده از صابون سیدنی احساس بهتری نسبت به خودم دارم.</p>
+                        <h5>- رضا محمدی</h5>
+                    </div>
+                    <div class="single_client_review" dir="rtl">
+                        <div class="client_img">
+                            <img src="{% static 'img/client_3.png' %}" alt="#">
+                        </div>
+                        <p>عدم فعالیت بعد خرید از فروشگاه لوازم خودکشی</p>
+                        <h5>- مرحوم اکبر اکبری</h5>
+                    </div>
+                    <div class="single_client_review" dir="rtl">
+                        <div class="client_img">
+                            <img src="{% static 'img/client_1.png' %}" alt="#">
+                        </div>
+                        <p>دستگاه فوفو رو پیشنهاد میکنم به خصوص برای چای عالیه</p>
+                        <h5>- امیر امیری</h5>
+                    </div>
+                    <div class="single_client_review" dir="rtl">
+                        <div class="client_img">
+                            <img src="{% static 'img/client_2.png' %}" alt="#">
+                        </div>
+                        <p>تو خرید دستمال کاغذی اسکارلت شک نکنید.</p>
+                        <h5>- محمد موسوی</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+ 

@@ -1,6 +1,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,windows,linux,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,windows,linux,visualstudiocode
-
+media
 ### Linux ###
 *~
 

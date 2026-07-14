@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    دیجی چرا - تکمیل اطلاعات
+{% endblock title %}
+    
+{% block content %}
+{% if user.is_authenticated %}
+    <section class="login_part section_padding ">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6">
+                    <div class="login_part_text text-center">
+                        <div class="login_part_text_iner">
+                            <h2>{{ user.store.store_name }}</h2>
+                            <hr>
+                            <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                            <hr>
+                            <p>لطفا اطلاعات مربوط به محصول را وارد کنید.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="login_part_form">
+                        <div class="login_part_form_iner">
+                            <h3>لطفا اطلاعات زیر را تکمیل کنید.</h3>
+                            <form class="row contact_form" id="productForm" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <div class="col-md-12 form-group p_star">
+                                    <label for="id_name">نام محصول</label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                        <div class="text-danger">{{ form.name.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-12 form-group p_star">
+                                    <label for="id_description">توضیحات</label>
+                                    {{ form.description }}
+                                    {% if form.description.errors %}
+                                        <div class="text-danger">{{ form.description.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-12 form-group p_star">
+                                    <label for="id_price">قیمت (تومان)</label>
+                                    {{ form.price }}
+                                    {% if form.price.errors %}
+                                        <div class="text-danger">{{ form.price.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-12 form-group p_star">
+                                    <label for="id_stock">موجودی انبار</label>
+                                    {{ form.stock }}
+                                    {% if form.stock.errors %}
+                                        <div class="text-danger">{{ form.stock.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-12 form-group p_star">
+                                    <label for="id_image">عکس محصول(حداکثر 3)</label>
+
+                                    {{ form.image }}
+                                    {% if form.image.errors %}
+                                        <div class="text-danger">{{ form.image.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-12 form-group p_star">
+                                    <label for="id_image">دسته بندی</label>
+                                    {{ form.category }}
+                                    {% if form.category.errors %}
+                                        <div class="text-danger">{{ form.category.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-12 form-group">
+                                    <button type="submit" value="submit" class="btn_3">
+                                        ثبت اطلاعات
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}
+{% endblock content %}
+    

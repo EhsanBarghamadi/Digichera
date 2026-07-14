@@ -149,6 +149,18 @@ class Product(SluggedModel):
         verbose_name_plural = 'محصولات'
         ordering = ['store']
 
+    @property
+    def primary_image(self):
+        img = self.images.filter(is_primary=True).first()
+        if img and img.image:
+                return img.image
+        
+        fallback_img = self.images.first()
+        if fallback_img and fallback_img.image:
+            return fallback_img.image
+            
+        return None
+    
     def __str__(self):
         return self.name
     

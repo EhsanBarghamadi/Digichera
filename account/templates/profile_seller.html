@@ -66,7 +66,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 form-group text-center">
-                                <a href="" class="btn_3">
+                                <a href="{% url 'product:product_create' %}" class="btn_3">
                                     افزودن محصول
                                 </a>
                             </div>
@@ -103,6 +103,64 @@
 <hr>
 {% endif %}
 
+
+{% if user.is_authenticated %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <h3 class="mb-4 text-center border-bottom pb-2">محصولات فروشگاه شما</h3>
+            <h5 class="mb-4 text-center border-bottom pb-2">برای ویرایش محصولات روی نام آنها کلیک کنید.</h5>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {% if user.store.products.exists %}
+                        {% for product in user.store.products.all %}
+                        <div class="row mb-3 border-bottom pb-3">
+                            <div class="col-12">
+                                <label class="font-weight-bold text-muted small">نام محصول:</label>
+                                <a href="{% url 'product:product_update' pk=product.id %}"><p class="mb-0">{{ product.name }}</p></a>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">تعداد موجودی:</label>
+                                    <p class="mb-0">{{ product.stock }} </p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">قیمت:</label>
+                                    <p class="mb-0">{{ product.price }}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">وضعیت:</label>
+                                    <p class="mb-0">
+                                        {% if product.is_active %}
+                                            <span class="badge bg-success">فعال</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">غیر فعال</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                        {% empty %}
+                        <p class="text-center text-muted">شما هنوز محصولی ثبت نکرده اید.</p>
+                        {% endfor %}
+                    {% else %}
+                         <p class="text-center text-muted">شما هنوز محصولی ثبت نکرده اید.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock content %}
 {% comment %} {% if user.is_authenticated %}
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -154,60 +212,4 @@
         </div>
     </div>
 </div>
-{% endif %}
-
-{% if user.is_authenticated %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-6">
-            <h3 class="mb-4 text-center border-bottom pb-2">محصولات فروشگاه شما</h3>
-            <h5 class="mb-4 text-center border-bottom pb-2">برای ویرایش محصولات روی نام آنها کلیک کنید.</h5>
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    {% if user.profile.store.products.exists %}
-                        {% for product in user.profile.store.products.all %}
-                        <div class="row mb-3 border-bottom pb-3">
-                            <div class="col-12">
-                                <label class="font-weight-bold text-muted small">نام محصول:</label>
-                                <a href="{% url 'product:product_edit'  product.id %}"><p class="mb-0">{{ product.name }}</p></a>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <label class="font-weight-bold text-muted small">تعداد موجودی:</label>
-                                    <p class="mb-0">{{ product.stock }} </p>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <label class="font-weight-bold text-muted small">قیمت:</label>
-                                    <p class="mb-0">{{ product.price|floatformat:0 }}</p>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <label class="font-weight-bold text-muted small">وضعیت:</label>
-                                    <p class="mb-0">
-                                        {% if product.is_active %}
-                                            <span class="badge bg-success">فعال</span>
-                                        {% else %}
-                                            <span class="badge bg-warning text-dark">غیر فعال</span>
-                                        {% endif %}
-                                    </p>
-                                </div>
-                            </div>
-                            <hr>
-                        </div>
-                        {% empty %}
-                        <p class="text-center text-muted">شما هنوز محصولی ثبت نکرده اید.</p>
-                        {% endfor %}
-                    {% else %}
-                         <p class="text-center text-muted">شما هنوز محصولی ثبت نکرده اید.</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 {% endif %} {% endcomment %}
-
-{% endblock content %}
