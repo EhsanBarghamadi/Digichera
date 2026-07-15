@@ -7,7 +7,7 @@ from user.models import CustomUser
 from .forms import StoreForm
 
 @login_required
-def create_store(request):
+def store_create(request):
     user = request.user
     if user.role == CustomUser.Roles.CUSTOMER or user.role == CustomUser.Roles.STAFF:
         messages.error(request, '⚠️ شما دسترسی برای ساخت فروشگاه ندارید')
@@ -28,4 +28,4 @@ def create_store(request):
                 messages.error(request, 'خطایی رخ داد: ' + str(e))
     else:
         form = StoreForm()
-    return render(request, 'create_store.html', {'form': form})
+    return render(request, 'store/store_form.html', {'form': form})

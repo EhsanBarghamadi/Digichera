@@ -20,7 +20,7 @@ def register_view(request):
     else:
         form = CustomUserCreateForm()
 
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'user/register.html', {'form': form})
 
 
 def logout_view(request):
@@ -45,4 +45,4 @@ def login_view(request):
                 form.add_error('phone', 'شماره موبایل یا رمز عبور اشتباه است.')
     else:
         form = CustomUserLoginForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'user/login.html', {'form': form})

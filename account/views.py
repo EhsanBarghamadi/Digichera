@@ -8,17 +8,17 @@ from .models import Profile
 from .forms import ProfileForm
 
 @login_required
-def profile_view(request):
+def profile_detail(request):
     user = request.user
     if user.role == CustomUser.Roles.CUSTOMER:
-        return render(request, 'profile_customer.html')
+        return render(request, 'account/profile_customer_detail.html')
     if user.role == CustomUser.Roles.SELLER:
-        return render(request, 'profile_seller.html')
+        return render(request, 'account/profile_seller_detail.html')
     if user.role == CustomUser.Roles.STAFF:
         return redirect(reverse('admin:index'))
 
 @login_required
-def profile_edit(request):
+def profile_update(request):
     profile = request.user.profile
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
@@ -28,4 +28,4 @@ def profile_edit(request):
             return redirect('account:profile')
     else:
         form = ProfileForm(instance=profile)
-    return render(request, 'profile_edit.html', {'form': form})
+    return render(request, 'account/profile_form.html', {'form': form})

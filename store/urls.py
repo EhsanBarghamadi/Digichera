@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import create_store
+from . import views
 
 app_name= 'store'
 
 urlpatterns = [
-    path('create/', create_store, name='create'),
+    path('create/', views.store_create, name='create'),
 ]

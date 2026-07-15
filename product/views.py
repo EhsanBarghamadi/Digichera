@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+from core.decorators import seller_required, store_owner_required
 from .froms import ProductForm
 from .models import Product, ProductImage, Category
 
 def product_list(request):
-    products = Product.objects.all(is_active=True)
-    categories = Category.objects.all(is_active=True)
+    products = Product.objects.filter(is_active=True)
+    categories = Category.objects.filter(is_active=True)
     return render(request, 'product/product_list.html', {'products': products, 'categories': categories})
 
 def product_detail(request, slug):
@@ -16,11 +16,9 @@ def product_detail(request, slug):
     return render(request, 'product/product_detail.html', {'product': product,})
 
 @login_required
+@seller_required
 def product_create(request):
     user = request.user
-    if not hasattr(user, 'store'):
-        messages.error(request, 'برای افزودن محصول ابتدا باید یک فروشگاه بسازید.')
-        return redirect('store:create')
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
@@ -37,11 +35,9 @@ def product_create(request):
     return render(request, 'product/product_form.html', {'form': form})
 
 @login_required
+@store_owner_required(Product)
 def product_update(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    if not hasattr(request.user, 'store') or product.store != request.user.store:
-        messages.error(request, 'شما اجازه‌ی ویرایش این محصول را ندارید.')
-        return redirect('account:profile')
+    product = request.obj
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():

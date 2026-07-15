@@ -31,7 +31,7 @@ class ProductForm(forms.ModelForm):
         })
     )
     category = forms.ModelChoiceField(
-        queryset=Category.objects.all(is_active=True),
+        queryset=Category.objects.filter(is_active=True),
         label='دسته بندی',
         widget=forms.Select(attrs={
             'class':'form-control'
