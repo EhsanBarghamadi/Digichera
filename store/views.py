@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 
 from user.models import CustomUser

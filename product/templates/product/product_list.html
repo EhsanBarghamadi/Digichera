@@ -49,12 +49,12 @@
                         {% for product in products %}
                             <div class="col-lg-6 col-sm-6">
                                 <div class="single_product_item">
-                                    
+
                                     <a href="{% url 'product:product_detail' product.slug %}">
                                         {% if product.primary_image %}
-                                        <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="img-fluid">
+                                            <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="img-fluid">
                                         {% else %}
-                                        <img src="https://via.placeholder.com/300x200?text=No+Image" alt="No Image" class="img-fluid">
+                                            <img src="{% static 'img/ProductNotFound.png' %}" alt="No Image" class="img-fluid">
                                         {% endif %}
                                         <h3> {{ product.name }} </h3>
                                         <p>نام فروشگاه: {{ product.store.store_name }} </p>

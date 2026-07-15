@@ -2,7 +2,7 @@ from functools import wraps
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 
-def seller_required(view_func):
+def store_required(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
         if not hasattr(request.user, 'store'):

@@ -18,6 +18,8 @@ INSTALLED_APPS += [
     'account',
     'store',
     'product',
+    'order',
+    'cart',
 ]
 
 DATABASES = {

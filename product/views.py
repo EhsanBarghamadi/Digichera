@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from core.decorators import seller_required, store_owner_required
-from .froms import ProductForm
+from core.decorators import store_required, store_owner_required
+from .forms import ProductForm
 from .models import Product, ProductImage, Category
 
 def product_list(request):
@@ -16,7 +16,7 @@ def product_detail(request, slug):
     return render(request, 'product/product_detail.html', {'product': product,})
 
 @login_required
-@seller_required
+@store_required
 def product_create(request):
     user = request.user
     if request.method == 'POST':

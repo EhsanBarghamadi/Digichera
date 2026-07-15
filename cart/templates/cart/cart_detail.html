@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+دیجی چرا - سبد خرید
+{% endblock title %}
+    
+
+{% block content %}
+    <section class="breadcrumb_part">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb_iner">
+                        <h2>سبد خرید</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  <section class="cart_area section_padding" dir="rtl">
+    <div class="container">
+      <div class="cart_inner">
+        <div class="table-responsive">
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">محصول</th>
+                <th scope="col"></th>
+                <th scope="col">قیمت</th>
+                <th scope="col">تعداد</th>
+                <th scope="col">جمع کل</th>
+              </tr>
+            </thead>
+
+
+            {% for item in cart.items.all %}
+              <tbody>
+              <tr>
+                <td>
+                  <div class="media">
+                    <div class="d-flex">
+                      
+                    {% if item.product.primary_image %}
+                      <img src="{{ item.product.primary_image.url }}" alt="" />
+                    {% else %}
+                      <img src="{% static 'img/ProductNotFound.png' %}" alt="" />  
+                    {% endif %}
+                        
+                    </div>
+                    <div class="media-body">
+                      <p>{{ item.product.name }}</p>
+                      <form action="{% url 'cart:remove' item.id %}" method="POST" style="display: inline;">
+                          {% csrf_token %}
+                          <button type="submit" class="genric-btn danger circle">
+                              حذف
+                          </button>
+                      </form>
+                    </div>
+                  </div>
+                </td>
+
+                <td></td>
+                  <h5>{{ item.product.price }} تومان</h5>
+                </td>
+                <td>
+                  <div class="product_count" dir="ltr">
+                     {{ item.quantity}}
+                  </div>
+                </td>
+                <td>
+                  <h5>{{ item.total_price }} تومان</h5>
+                </td>
+              </tr>
+            {% endfor %}
+  
+              <tr class="bottom_button">
+                <td>
+                  <a class="btn_1" href="{% url 'product:product_list' %}">ادامه خرید</a>
+                </td>
+              </tr>
+              <tr>
+
+                <td></td>
+                <td></td>
+                <td>
+                  <h5>مجموع</h5>
+                </td>
+                <td>
+                  <h5>{{ cart.total_price }} تومان</h5>
+                </td>
+              </tr>
+              <tr class="shipping_area"  dir="ltr">
+                <td></td>
+                <td></td>
+                <td>
+                  <h5></h5>
+                </td>
+                <td>
+                  <div class="shipping_box" >
+                    <ul class="list">
+                      <li>
+                          تعرفه ثابت: 30000 تومان
+                      </li>
+                      <li>
+                        
+                        {% if user.profile.location %}
+                          جزئیات آدرس:  <b>{{ user.profile.location }}</b> 
+                        {% else %}
+                          <b> !آدرسی برای شما ثبت نشده</b>
+                        {% endif %}
+
+                      </li>
+                      <li>
+                          <br>
+                          هزینه نهایی ارسال بعد از انتخاب <b>کشور</b> مشخص می شود.
+                          <br>
+                      </li>
+
+                    <h6>
+                      کشور مقصد
+                      <i class="fa fa-caret-down" aria-hidden="true"></i>
+                    </h6>
+                    <select class="shipping_select" >
+                      <option value="1">ایران</option>
+                      <option value="2">کره شمالی</option>
+                      <option value="4">سومالی</option>
+                    </select>
+                    <a class="btn_1" href="{% url 'account:update' %}">ویرایش آدرس</a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="checkout_btn_inner float-right">
+            <a class="btn_1" href="">نهایی کردن سفارش</a>
+          </div>
+        </div>
+      </div>
+  </section>
+{% endblock content %}
+
+

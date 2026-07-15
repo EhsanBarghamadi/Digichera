@@ -24,11 +24,19 @@
       <div class="row justify-content-center">
         <div class="col-lg-12">
           <div class="product_img_slide owl-carousel" dir="ltr">
+            
+            {% if product.images.all %}
               {% for img in product.images.all %}
                 <div class="single_product_img">
                   <img src="{{ img.image.url }}" alt="#" class="img-fluid">
                 </div>
               {% endfor %}
+            {% else %}
+                <div class="single_product_img">
+                  <img src="{% static 'img/ProductNotFound.png' %}" alt="#" class="img-fluid">
+                </div>
+            {% endif %}
+              
           </div>
         </div>
         <div class="col-lg-8">
@@ -45,7 +53,7 @@
             <p>
                 شماره تماس فروشگاه: {{ product.store.store_phone }}
             </p>
-          <form action="" method="POST">
+          <form action="{% url 'cart:add' product.id %}" method="POST">
               {% csrf_token %}
             <div class="card_area">
                 <div class="product_count_area">
@@ -55,8 +63,9 @@
                           <input class="product_count_item input-number" name="quantity" type="number" value="1" min="1" max="{{ product.stock }}">
                         <span class="product_count_item number-increment"> <i class="ti-plus"></i></span>
                     </div>
-                    <p>{{ product.price|floatformat:0 }} تومان</p>
+                    <p>{{ product.price }} تومان</p>
                 </div>
+                <input type="hidden" name="next" value="{{ request.path }}">
                 <div class="add_to_cart">
                     <button type="submit" class="btn_3">اضافه کردن به سبد خرید</button>
                 </div>

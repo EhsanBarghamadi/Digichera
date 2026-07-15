@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 
+from cart.utils import merge_guest_cart_into_user_cart
 from .forms import CustomUserCreateForm , CustomUserLoginForm
 
 def register_view(request):
@@ -15,7 +16,9 @@ def register_view(request):
                 user.set_password(password)
                 user.save()
                 messages.success(request, 'تبریک! ثبت نام شما با موفقیت انجام شد.')
+                old_session_key = request.session.session_key
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                merge_guest_cart_into_user_cart(old_session_key, user)
                 return redirect('page:home')
     else:
         form = CustomUserCreateForm()
@@ -30,6 +33,7 @@ def logout_view(request):
     messages.info(request, 'شما با موفقیت خارج شدید.')
     return redirect('page:home')
 
+
 def login_view(request):
     if request.method == 'POST':
         form = CustomUserLoginForm(request.POST)
@@ -38,7 +42,9 @@ def login_view(request):
             password = form.cleaned_data.get('password')
             user = authenticate(request, phone=phone, password=password)
             if user is not None:
+                old_session_key = request.session.session_key
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                merge_guest_cart_into_user_cart(old_session_key, user)
                 messages.success(request, 'خوش آمدید! ورود با موفقیت انجام شد.')
                 return redirect('page:home')
             else:
