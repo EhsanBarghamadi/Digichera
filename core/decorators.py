@@ -19,7 +19,7 @@ def store_owner_required(model, lookup_field='pk', lookup_url_kwarg=None):
             obj = get_object_or_404(model, **{lookup_field: kwargs.get(lookup_url_kwarg)})
             if not hasattr(request.user, 'store') or obj.store != request.user.store:
                 messages.error(request, 'شما اجازه‌ی دسترسی به این مورد را ندارید.')
-                return redirect('account:profile')
+                return redirect('account:detail')
             request.obj = obj
             return view_func(request, *args, **kwargs)
         return wrapper

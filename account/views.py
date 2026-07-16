@@ -25,7 +25,7 @@ def profile_update(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'پروفایل شما با موفقیت بروزرسانی شد')
-            return redirect('account:profile')
+            return redirect('account:detail')
     else:
         form = ProfileForm(instance=profile)
     return render(request, 'account/profile_form.html', {'form': form})

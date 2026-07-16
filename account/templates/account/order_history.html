@@ -1,0 +1,80 @@
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-9">
+            <h3 class="mb-4 text-center border-bottom pb-2">فاکتور های خرید</h3>
+            {% if user.orders.exists %}
+                {% for order in user.orders.all %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="font-weight-bold">سفارش #{{ order.id }}</span>
+                        <span>
+                            {% if order.status == 'paid' %}
+                                <span class="badge bg-success">پرداخت شده</span>
+                            {% elif order.status == 'shipped' %}
+                                <span class="badge bg-info">ارسال شده</span>
+                            {% elif order.status == 'delivered' %}
+                                <span class="badge bg-primary">تحویل داده شده</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">در انتظار پرداخت</span>
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-12 col-md-6">
+                                <label class="font-weight-bold text-muted small">نام فروشگاه:</label>
+                                <p class="mb-0">{{ order.store.store_name }}</p>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="font-weight-bold text-muted small">تاریخ ثبت سفارش:</label>
+                                <p class="mb-0">{{ order.created_at|date:"Y/m/d H:i" }}</p>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="font-weight-bold text-muted small">آدرس ارسال:</label>
+                                <p class="mb-0">{{ order.shipping_address }}</p>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>محصول</th>
+                                        <th>قیمت واحد</th>
+                                        <th>تعداد</th>
+                                        <th>جمع</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order.items.all %}
+                                    <tr>
+                                        <td>{{ item.product_name }}</td>
+                                        <td>{{ item.price|floatformat:0 }} تومان</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>{{ item.total_price|floatformat:0 }} تومان</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="text-left">
+                            <h5>مبلغ کل: {{ order.total_price|floatformat:0 }} تومان</h5>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            {% else %}
+                <p class="text-center text-muted">سفارشی برای نمایش وجود ندارد.</p>
+            {% endif %}
+
+        </div>
+    </div>
+</div>

@@ -39,15 +39,19 @@ def cart_update(request, item_id):
     cart = get_or_create_cart(request)
     item = get_object_or_404(CartItem, id=item_id, cart=cart)
     quantity = int(request.POST.get('quantity', 1))
-
+    
     if quantity <= 0:
         item.delete()
         messages.info(request, 'محصول از سبد خرید حذف شد')
+    
+    elif quantity > item.product.stock:
+        messages.error(request, 'تعداد از موجودی انبار بیشتر است')
 
     else:
         item.quantity = quantity
         item.save()
         messages.success(request, 'تعداد بروزرسانی شد')
+
     return redirect('cart:detail')
 
 def cart_remove(request, item_id):

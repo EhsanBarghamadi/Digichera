@@ -8,62 +8,80 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-    {% include 'account/profile_detail.html' %}
-{% endif %}
+{% load static %} 
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <h3 class="mb-4 text-center border-bottom pb-2">پروفایل کاربری</h3>
 
-
-{% comment %} {% if user.is_authenticated %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-6">
-            <h3 class="mb-4 text-center border-bottom pb-2">سفارشات ثبت شده</h3>
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    {% if user.profile.orders.exists %}
-                        {% for order in user.profile.orders.all %}
-                        <div class="row mb-3 border-bottom pb-3">
-                            <div class="col-12">
-                                <label class="font-weight-bold text-muted small">شماره سفارش:</label>
-                                <p class="mb-0">#{{ order.id }}</p>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <label class="font-weight-bold text-muted small">مبلغ کل:</label>
-                                    <p class="mb-0">{{ order.total_price|floatformat:0 }} تومان</p>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-12 col-md-4 text-center mb-3 mb-md-0">
+                                <div class="mb-3">
+                                    
+                                    {% if user.profile.avatar %}
+                                        <img src="{{ user.profile.avatar.url }}" alt="عکس پروفایل" class="img-fluid rounded-circle border border-light shadow-sm" width="150" height="150" style="object-fit: cover;">
+                                    {% else %}
+                                        <img src="{% static 'img/elements/d.jpg' %}" alt="پروفایل پیش‌فرض" class="img-fluid rounded-circle border border-light shadow-sm" width="150" height="150" style="object-fit: cover;">
+                                    {% endif %}
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <label class="font-weight-bold text-muted small">تاریخ ثبت سفارش:</label>
-                                    <p class="mb-0">  {{ order.created_at|date:"Y/m/d H:i" }}  </p>
+
+                            <div class="col-12 col-md-8">
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <label class="font-weight-bold text-muted small">نام:</label>
+                                        <p class="mb-0">{{ user.first_name|default:"-" }}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <label class="font-weight-bold text-muted small">وضعیت:</label>
-                                    <p class="mb-0">
-                                        {% if order.status == 'pending' %}
-                                            <span class="badge bg-success">پرداخت شده</span>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <label class="font-weight-bold text-muted small">نام خانوادگی:</label>
+                                        <p class="mb-0">{{ user.last_name|default:"-" }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <label class="font-weight-bold text-muted small">کد پستی:</label>
+                                        {% if user.profile.postal_code %}
+                                            <p class="mb-0">{{ user.profile.postal_code }}</p>
                                         {% else %}
-                                            <span class="badge bg-warning text-dark">در انتظار پرداخت</span>
+                                            <p class="text-muted small mb-0">کد پستی برای شما ثبت نشده</p>
                                         {% endif %}
-                                    </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <label class="font-weight-bold text-muted small">آدرس:</label>
+                                        {% if user.profile.location %}
+                                            <p class="mb-0">{{ user.profile.location }}</p>
+                                        {% else %}
+                                            <p class="text-muted small mb-0">آدرسی ثبت نشده است.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12 form-group">
+                                    <a href="{% url 'account:update' %}" class="btn_3">
+                                        ویرایش / تکمیل اطلاعات
+                                    </a>
                                 </div>
                             </div>
-                            <hr>
                         </div>
-                        {% empty %}
-                        <p class="text-center text-muted">شما هنوز سفارشی ثبت نکرده‌اید.</p>
-                        {% endfor %}
-                    {% else %}
-                         <p class="text-center text-muted">شما هنوز سفارشی ثبت نکرده‌اید.</p>
-                    {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-{% endif %} {% endcomment %}
+
+    {% include 'account/order_history.html' %}
+
+{% endif %}
 
 {% endblock content %}
     

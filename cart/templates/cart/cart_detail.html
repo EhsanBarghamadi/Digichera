@@ -63,6 +63,7 @@
                 </td>
 
                 <td></td>
+                <td>
                   <h5>{{ item.product.price }} تومان</h5>
                 </td>
                 <td>
@@ -134,9 +135,18 @@
               </tr>
             </tbody>
           </table>
-          <div class="checkout_btn_inner float-right">
-            <a class="btn_1" href="">نهایی کردن سفارش</a>
-          </div>
+          
+          <form method="post" action="{% url 'order:checkout' %}">
+            {% csrf_token %}
+
+            <div class="checkout_btn_inner float-right">
+                <button type="submit" value="submit" class="btn_1">
+                    نهایی کردن سفارش
+                </button>
+            </div>
+
+          </form>
+
         </div>
       </div>
   </section>

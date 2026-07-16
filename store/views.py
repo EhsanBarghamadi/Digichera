@@ -6,6 +6,10 @@ from user.models import CustomUser
 from .forms import StoreForm
 
 @login_required
+def store_detail(request):
+    return render(request, 'store/store_detail.html')
+
+@login_required
 def store_create(request):
     user = request.user
     if user.role == CustomUser.Roles.CUSTOMER or user.role == CustomUser.Roles.STAFF:
@@ -13,7 +17,7 @@ def store_create(request):
         return redirect('page:home')
     if hasattr(user, 'store'):
         messages.info(request, 'شما از قبل یک فروشگاه دارید')
-        return redirect('account:profile')
+        return redirect('account:detail')
     if request.method == 'POST':
         form = StoreForm(request.POST, request.FILES)
         if form.is_valid():
@@ -22,7 +26,7 @@ def store_create(request):
                 store.owner = request.user
                 store.save()
                 messages.success(request, 'تبریک! فروشگاه شما با موفقیت ایجاد شد.')
-                return redirect('account:profile')
+                return redirect('account:detail')
             except Exception as e:
                 messages.error(request, 'خطایی رخ داد: ' + str(e))
     else:
