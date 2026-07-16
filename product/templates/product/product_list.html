@@ -35,7 +35,7 @@
                             <div class="select_option_list">دسته ها <i class="right fas fa-caret-down"></i> </div>
                             <div class="select_option_dropdown">
                                 {% for category in categories %}
-                                    <p><a href="">{{ category.name }}</a></p>
+                                    <p><a href="{% url 'product:category' category.id %}">{{ category.name }}</a></p>
                                 {% endfor %}
                             </div>
                         </div>

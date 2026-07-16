@@ -83,11 +83,11 @@
                     hiddenInput.name = 'q';
                     hiddenInput.value = query;
                     searchForm.appendChild(hiddenInput);
-                    searchForm.action = ""; 
+                    searchForm.action = "{% url 'product:search' %}"; 
                     searchForm.method = "GET";
                     searchForm.submit();
                 } else {
-                    searchForm.action = "";
+                    searchForm.action = "{% url 'product:search' %}";
                     searchForm.method = "GET";
                     searchForm.submit();
                 }

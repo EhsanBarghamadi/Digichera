@@ -1,19 +1,43 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 
 from core.decorators import store_required, store_owner_required
 from .forms import ProductForm
 from .models import Product, ProductImage, Category
+
 
 def product_list(request):
     products = Product.objects.filter(is_active=True)
     categories = Category.objects.filter(is_active=True)
     return render(request, 'product/product_list.html', {'products': products, 'categories': categories})
 
+
+def product_category(request, category_id):
+    products = Product.objects.filter(is_active=True, category=category_id)
+    categories = Category.objects.filter(is_active=True)
+    return render(request, 'product/product_list.html', {'products': products, 'categories':categories})
+
+
+def product_search(request):
+    products = Product.objects.filter(is_active=True)
+    categories = Category.objects.filter(is_active=True)
+    query = request.GET.get('q', '')
+
+    if query:
+        products = products.filter(
+            Q(name__icontains=query) | 
+            Q(store__store_name__icontains=query) |
+            Q(description__icontains=query)
+        )
+    return render(request, 'product/product_list.html', {'products': products, 'categories':categories})
+
+
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug, is_active=True)
     return render(request, 'product/product_detail.html', {'product': product,})
+
 
 @login_required
 @store_required
@@ -34,6 +58,7 @@ def product_create(request):
         form = ProductForm()
     return render(request, 'product/product_form.html', {'form': form})
 
+
 @login_required
 @store_owner_required(Product)
 def product_update(request, pk):
@@ -52,4 +77,5 @@ def product_update(request, pk):
     else:
         form = ProductForm(instance=product)
     return render(request, 'product/product_form.html', {'form': form})
+
 
