@@ -2,14 +2,17 @@ from functools import wraps
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 
-def store_required(view_func):
-    @wraps(view_func)
-    def wrapper(request, *args, **kwargs):
-        if not hasattr(request.user, 'store'):
-            messages.error(request, 'برای این کار ابتدا باید فروشگاه بسازید')
-            return redirect('store:create')
-        return view_func(request, *args, **kwargs)
-    return wrapper
+def store_required(message=None):
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+            if not hasattr(request.user, 'store'):
+                msg = message or 'شما اجازه دسترسی به این بخش را ندارید'
+                messages.error(request, msg)
+                return redirect('store:create')
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
 
 def store_owner_required(model, lookup_field='pk', lookup_url_kwarg=None):
     lookup_url_kwarg = lookup_url_kwarg or lookup_field

@@ -1,9 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import connection
+from django.views.decorators.http import require_POST
 
+from core.decorators import store_required
 from cart.utils import get_or_create_cart
 from product.models import Product
 from .models import Order, OrderItem
@@ -82,3 +84,23 @@ def order_success(request):
     return render(request, 'order/order_detail.html', {'created_orders': created_orders})
     
 
+@login_required
+@store_required()
+@require_POST
+def order_update_status(request, order_id):
+    order = get_object_or_404(Order, pk=order_id, store=request.user.store)
+
+    new_status = request.POST.get('status')
+    valid_transitions = {
+        Order.Status.PAID: [Order.Status.SHIPPED],
+        Order.Status.SHIPPED: [Order.Status.DELIVERED],
+    }
+    allowed_next = valid_transitions.get(order.status, [])
+    if new_status not in allowed_next:
+        messages.error(request, 'تغییر وضعیت درخواستی مجاز نیست.')
+        return redirect('store:detail')
+
+    order.status = new_status
+    order.save()
+    messages.success(request, f'وضعیت سفارش #{order.id} بروزرسانی شد.')
+    return redirect('store:detail')
