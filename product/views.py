@@ -40,7 +40,7 @@ def product_detail(request, slug):
 
 
 @login_required
-@store_required
+@store_required()
 def product_create(request):
     user = request.user
     if request.method == 'POST':

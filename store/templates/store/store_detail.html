@@ -198,6 +198,24 @@
                                     <p class="mb-0">{{ order.shipping_address }}</p>
                                 </div>
                             </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="font-weight-bold text-muted small">تغییر وضیعیت سفارش:</label>
+                                    {% if order.status == 'paid' %}
+                                        <form action="{% url 'order:update_status' order.id %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="status" value="shipped">
+                                            <button type="submit" class="btn_3">علامت‌گذاری به‌عنوان ارسال‌شده</button>
+                                        </form>
+                                    {% elif order.status == 'shipped' %}
+                                        <form action="{% url 'order:update_status' order.id %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="status" value="delivered">
+                                            <button type="submit" class="btn_3">علامت‌گذاری به‌عنوان تحویل‌شده</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
 
                             <hr>
 

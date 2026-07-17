@@ -3,9 +3,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from user.models import CustomUser
+from core.decorators import store_required
 from .forms import StoreForm
 
 @login_required
+@store_required()
 def store_detail(request):
     return render(request, 'store/store_detail.html')
 
