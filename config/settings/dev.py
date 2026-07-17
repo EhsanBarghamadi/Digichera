@@ -11,6 +11,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 INSTALLED_APPS += [
     # Third-party Apps
     'localflavor',
+    'django_extensions',
     # Local Apps
     'page',
     'core',
