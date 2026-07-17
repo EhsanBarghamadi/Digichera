@@ -1,55 +1,73 @@
 <div align="center">
 
-# 🛍️ Digichera
+# Digichera
 
-A multi-vendor e-commerce marketplace built with Django, where sellers open their own stores and customers shop across all of them from a single cart.
+**A multi-vendor e-commerce marketplace built with Django**
+
+Sellers open their own stores, list products, and manage orders — customers browse every store from one catalog and check out in a single flow, with orders automatically split per vendor behind the scenes.
 
 [![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-6.0-092E20?style=flat&logo=django&logoColor=white)](https://www.djangoproject.com/)
-[![SQLite](https://img.shields.io/badge/SQLite-demo-003B57?style=flat&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![SQLite](https://img.shields.io/badge/SQLite-dev-003B57?style=flat&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-prod-4169E1?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 
 </div>
 
 ---
 
-## About
+## Overview
 
-Digichera is a Django-based multi-vendor marketplace, similar in spirit to platforms like Basalam or Digikala. Any user can register as a **customer** or a **seller**; sellers open their own storefront and list products, while customers can shop from multiple stores and check out in a single flow — with the system automatically splitting the order per store behind the scenes.
+Digichera is a Django-based multi-vendor marketplace, in the spirit of platforms like Digikala or Basalam. Any visitor can register with just a phone number, then act as a **customer** or open a **store** and sell as a **seller**. Customers can add products from several different stores to a single cart; at checkout, that cart is split into one order per store automatically, and stock is validated inside a database transaction to prevent overselling.
 
-This project was built from the ground up as a hands-on exercise in designing a real-world Django application: custom user models, decoupled apps, soft deletes, race-condition-safe checkout, and more.
+The project is organized as a set of small, decoupled Django apps rather than one monolith, each owning a single concern (users, stores, products, cart, orders, profiles).
 
 ## Features
 
-- 🔐 **Custom authentication** — phone-number-based login/registration (no username/email required)
-- 👤 **Role-based accounts** — customer, seller, and staff roles
-- 🏪 **Seller storefronts** — each seller manages their own `Store` with an auto-generated unique slug
-- 🗂️ **Nested categories** — self-referential category tree with cycle protection and cascading soft-delete
-- 📦 **Product catalog** — multiple images per product with automatic thumbnail compression
-- 🛒 **Smart shopping cart** — works for guests (session-based) and logged-in users, with automatic cart merging on login
-- 🏬 **Multi-vendor checkout** — a single cart is automatically split into one `Order` per store
-- ⚛️ **Atomic, race-condition-safe checkout** — stock validation with `select_for_update` (PostgreSQL) inside a DB transaction
-- 📈 **Order lifecycle** — `pending → paid → shipped → delivered`, with sellers controlling valid status transitions
-- 🔍 **Search & category filtering** for the product catalog
-- 🛠️ **Fully wired Django admin** — inlines for product images/order items, guarded soft-delete actions
+- **Phone-based authentication** — custom user model, no username or email required to sign up or log in
+- **Role-aware accounts** — `customer`, `seller`, and `staff` roles on the same user model
+- **Seller storefronts** — each seller owns one `Store`, with an auto-generated slug and a compressed, auto-resized logo
+- **Nested product categories** — a self-referential category tree with cycle protection (`clean()` blocks a category from becoming its own ancestor) and cascading soft-delete
+- **Product catalog** — multiple images per product, with a designated primary image and automatic thumbnailing/compression via Pillow on save
+- **Guest & authenticated carts** — anonymous users get a session-based cart that transparently merges into their account cart on login/register
+- **Multi-vendor checkout** — one cart, split into a separate `Order` per store, each with its own `OrderItem`s and shipping snapshot
+- **Transaction-safe stock handling** — checkout runs inside `transaction.atomic()` and locks product rows with `select_for_update()` on PostgreSQL to prevent race conditions on stock
+- **Order lifecycle** — `pending → paid → shipped → delivered`, with sellers restricted to valid status transitions on their own store's orders
+- **Search & category filtering** on the product catalog
+- **Access-controlled seller actions** — decorators (`store_required`, `store_owner_required`) guard store/product management views
+- **Django admin** wired up for all models
 
 ## Tech Stack
 
-| Layer      | Technology                                                          |
-| ---------- | ------------------------------------------------------------------- |
-| Backend    | Django 6.0                                                          |
-| Database   | SQLite (development/demo) · PostgreSQL (recommended for production) |
-| Images     | Pillow (automatic compression/resizing)                             |
-| Validation | django-localflavor (Iranian postal code validation)                 |
-| Config     | python-decouple (environment-based settings)                        |
-| Frontend   | Django Templates + Bootstrap                                        |
+| Layer         | Technology                                                     |
+| ------------- | -------------------------------------------------------------- |
+| Backend       | Django 6.0                                                     |
+| Database      | SQLite (development) · PostgreSQL (production, via `psycopg2`) |
+| Images        | Pillow (server-side resize/compression on upload)              |
+| Localization  | django-localflavor (Iranian postal code validation), `fa-ir`   |
+| Configuration | python-decouple (environment-based settings)                   |
+| Frontend      | Django Templates + Bootstrap                                   |
+
+## Project Structure
+
+```
+Digichera/
+├── config/          # Project settings (base / dev / prod), root URLconf, WSGI/ASGI
+├── core/            # Shared abstract models (TimeStampedModel, SluggedModel) & decorators
+├── user/            # Custom phone-based user model, auth views
+├── account/         # Customer profile (address, postal code, avatar)
+├── store/           # Seller storefronts
+├── product/         # Categories, products, product images
+├── cart/            # Guest & user shopping cart
+├── order/           # Checkout, orders, order items, status transitions
+├── page/            # Static-ish pages (home, about, contact, bank)
+├── static/          # Frontend assets (CSS/JS)
+├── templates/       # Shared templates
+└── docs/            # Database diagram
+```
 
 ## Database Schema
 
 ![Database Diagram](docs/diagram.jpg)
-
-You can explore the full interactive schema on DrawSQL:
-[View Interactive Diagram](https://drawsql.app/teams/ehsan-barghamadi/diagrams/digichera)
 
 ## Getting Started
 
@@ -84,10 +102,16 @@ Edit `.env` with your own values:
 SECRET_KEY=your-secret-key
 DEBUG=True
 ALLOWED_HOSTS=127.0.0.1,localhost
-DJANGO_ENV=dev
+
+# Only required when running against PostgreSQL (prod settings)
+NEW_DB_NAME=digichera
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_HOST=localhost
+DB_PORT=5432
 ```
 
-`DJANGO_ENV` switches between `config/settings/dev.py` (SQLite, `DEBUG=True`) and `config/settings/prod.py` (PostgreSQL, hardened settings). It defaults to `dev`, so this demo runs on SQLite out of the box — no PostgreSQL setup required.
+By default the project runs on `config.settings.dev`, which uses SQLite and requires no database setup. Point `DJANGO_SETTINGS_MODULE` at `config.settings.prod` to switch to PostgreSQL with hardened settings for production.
 
 ### Run
 
@@ -97,34 +121,17 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Visit `http://127.0.0.1:8000` for the storefront and `http://127.0.0.1:8000/admin/` for the admin panel. A `db.sqlite3` with sample sellers/products is included, or you can add your own through the admin panel.
+Visit `http://127.0.0.1:8000/` for the storefront and `http://127.0.0.1:8000/admin/` for the admin panel.
 
-## Project Structure
+## Roadmap / Ideas
 
-```
-config/     # Settings (split by environment), root URLs
-core/       # Shared abstract base models (TimeStampedModel, SluggedModel) and decorators
-user/       # Custom phone-based authentication
-account/    # User profile (avatar, address, postal code)
-store/      # Seller storefronts
-product/    # Categories, products, product images
-cart/       # Guest + authenticated shopping cart
-order/      # Checkout, orders, order status lifecycle
-page/       # Static pages (home, about, contact)
-```
-
-## Known Limitations / Roadmap
-
-This is an educational project, built incrementally with a focus on getting the fundamentals right. A few things are intentionally left for future iterations:
-
-- [ ] No real payment gateway integration (checkout uses a simulated "bank" redirect page)
-- [ ] `prod.py` settings are scaffolded but not yet hardened for real deployment
-- [ ] No automated test suite yet
-- [ ] Some image-compression logic is duplicated across models and could be refactored into a shared abstract base class
+- Payment gateway integration for the checkout → `page:bank` flow
+- Seller-side product/order dashboards beyond the Django admin
+- REST API layer for a decoupled frontend
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+No license has been chosen for this project yet. Add a `LICENSE` file to specify how others may use this code.
 
 ---
 
