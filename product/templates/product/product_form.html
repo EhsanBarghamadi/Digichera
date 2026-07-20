@@ -76,6 +76,16 @@
                                         <div class="text-danger">{{ form.category.errors }}</div>
                                     {% endif %}
                                 </div>
+                                
+                                <div class="col-md-12 form-group p_star">
+                                    <div class="form-check">
+                                        {{ form.is_active }}
+                                        <label class="form-check-label" for="id_is_active">محصول فعال باشد</label>
+                                    </div>
+                                    {% if form.is_active.errors %}
+                                        <div class="text-danger">{{ form.is_active.errors }}</div>
+                                    {% endif %}
+                                </div>
 
                                 <div class="col-md-12 form-group">
                                     <button type="submit" value="submit" class="btn_3">

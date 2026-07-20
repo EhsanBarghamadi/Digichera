@@ -41,7 +41,7 @@ class ProductForm(forms.ModelForm):
     )
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'stock', 'category']
+        fields = ['name', 'description', 'price', 'stock', 'category', 'is_active']
 
         widgets = {
             'name': forms.TextInput(attrs={
@@ -59,6 +59,9 @@ class ProductForm(forms.ModelForm):
             'stock': forms.NumberInput(attrs={
                 'class': 'form-control'
                 }),
+            'is_active': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
         }
 
     def __init__(self, *args, **kwargs):
