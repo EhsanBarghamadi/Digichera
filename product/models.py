@@ -9,6 +9,17 @@ from django.core.exceptions import ValidationError
 from core.models import SluggedModel, TimeStampedModel
 from .validators import validate_file_size
 
+
+class CategoryQuerySet(models.QuerySet):
+    def delete(self):
+        self.update(is_active=False)
+        for obj in self:
+            obj.delete()
+
+class CategoryManager(models.Manager):
+    def get_queryset(self):
+        return CategoryQuerySet(self.model, using=self._db)
+    
 class Category(SluggedModel):
     name = models.CharField(
         verbose_name='نام دسته بندی',
@@ -33,6 +44,8 @@ class Category(SluggedModel):
         verbose_name_plural = 'دسته بندی ها'
         ordering = ['name']
 
+    objects = CategoryManager()
+
     def __str__(self):
         return self.name
     
@@ -53,6 +66,7 @@ class Category(SluggedModel):
                     raise ValidationError('یک دسته‌بندی نمی‌تواند زیرمجموعه‌ی خودش باشد.')
                 p = p.parent 
         return super().clean()
+
 
 class ProductImage(TimeStampedModel):
     product = models.ForeignKey(
