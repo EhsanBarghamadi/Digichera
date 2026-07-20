@@ -9,7 +9,7 @@ from .models import Product, ProductImage, Category
 
 
 def product_list(request):
-    products = Product.objects.filter(is_active=True)
+    products = Product.objects.filter(is_active=True, store__is_active=True).select_related('store')
     categories = Category.objects.filter(is_active=True)
     return render(request, 'product/product_list.html', {'products': products, 'categories': categories})
 
