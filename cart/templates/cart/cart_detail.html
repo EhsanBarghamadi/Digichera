@@ -5,7 +5,6 @@
 دیجی چرا - سبد خرید
 {% endblock title %}
     
-
 {% block content %}
     <section class="breadcrumb_part">
         <div class="container">
@@ -35,9 +34,8 @@
               </tr>
             </thead>
 
-
+            <tbody>
             {% for item in cart.items.all %}
-              <tbody>
               <tr>
                 <td>
                   <div class="media">
@@ -52,12 +50,14 @@
                     </div>
                     <div class="media-body">
                       <p>{{ item.product.name }}</p>
-                      <form action="{% url 'cart:remove' item.id %}" method="POST" style="display: inline;">
+                      
+                      <form action="{% url 'cart:remove' item.id %}" method="POST" style="display: inline; margin-top: 10px;">
                           {% csrf_token %}
-                          <button type="submit" class="genric-btn danger circle">
+                          <button type="submit" class="genric-btn danger circle" style="font-size: 12px; padding: 2px 15px;">
                               حذف
                           </button>
                       </form>
+                      
                     </div>
                   </div>
                 </td>
@@ -66,90 +66,95 @@
                 <td>
                   <h5>{{ item.product.price }} تومان</h5>
                 </td>
+                
                 <td>
-                  <div class="product_count" dir="ltr">
-                     {{ item.quantity}}
-                  </div>
+                  <form action="{% url 'cart:update' item.id %}" method="POST" class="d-flex align-items-center">
+                      {% csrf_token %}
+                      <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="form-control text-center" style="width: 70px;">
+                      <button type="submit" class="genric-btn info radius mx-2" style="padding: 5px 15px; font-size: 12px; height: 38px;">
+                          بروزرسانی
+                      </button>
+                  </form>
                 </td>
+                
                 <td>
                   <h5>{{ item.total_price }} تومان</h5>
                 </td>
               </tr>
             {% endfor %}
+            </tbody>
   
+            <tbody>
               <tr class="bottom_button">
                 <td>
                   <a class="btn_1" href="{% url 'product:product_list' %}">ادامه خرید</a>
                 </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
               </tr>
               <tr>
-
                 <td></td>
                 <td></td>
                 <td>
                   <h5>مجموع</h5>
                 </td>
+                <td></td>
                 <td>
                   <h5>{{ cart.total_price }} تومان</h5>
                 </td>
               </tr>
-              <tr class="shipping_area"  dir="ltr">
+              <tr class="shipping_area" dir="ltr">
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td>
-                  <h5></h5>
-                </td>
-                <td>
-                  <div class="shipping_box" >
-                    <ul class="list">
+                  <div class="shipping_box" dir="rtl">
+                    <ul class="list text-right">
                       <li>
-                          تعرفه ثابت: 30000 تومان
+                          تعرفه ثابت: ۳۰,۰۰۰ تومان
                       </li>
-                      <li>
-                        
+                      <li class="mt-2">
                         {% if user.profile.location %}
                           جزئیات آدرس:  <b>{{ user.profile.location }}</b> 
                         {% else %}
-                          <b> !آدرسی برای شما ثبت نشده</b>
+                          <b class="text-danger">!آدرسی برای شما ثبت نشده</b>
                         {% endif %}
-
                       </li>
-                      <li>
-                          <br>
+                      <li class="mt-2 text-muted">
                           هزینه نهایی ارسال بعد از انتخاب <b>کشور</b> مشخص می شود.
-                          <br>
                       </li>
+                    </ul>
 
-                    <h6>
+                    <h6 class="text-right mt-3">
                       کشور مقصد
                       <i class="fa fa-caret-down" aria-hidden="true"></i>
                     </h6>
-                    <select class="shipping_select" >
+                    <select class="shipping_select w-100 mb-3">
                       <option value="1">ایران</option>
                       <option value="2">کره شمالی</option>
                       <option value="4">سومالی</option>
                     </select>
-                    <a class="btn_1" href="{% url 'account:update' %}">ویرایش آدرس</a>
+                    <a class="btn_1 d-block text-center" href="{% url 'account:update' %}">ویرایش آدرس</a>
                   </div>
                 </td>
               </tr>
             </tbody>
           </table>
           
-          <form method="post" action="{% url 'order:checkout' %}">
+          <form method="post" action="{% url 'order:checkout' %}" class="mt-4">
             {% csrf_token %}
-
-            <div class="checkout_btn_inner float-right">
-                <button type="submit" value="submit" class="btn_1">
+            <div class="checkout_btn_inner float-left">
+                <button type="submit" value="submit" class="btn_1 checkout_btn_1">
                     نهایی کردن سفارش
                 </button>
             </div>
-
           </form>
 
         </div>
       </div>
+    </div>
   </section>
 {% endblock content %}
-
-

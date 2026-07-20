@@ -8,4 +8,3 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         from account.models import Profile
         Profile.objects.create(user=instance)
-        print(f"Profile created for {instance.full_name}")

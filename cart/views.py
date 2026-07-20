@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.views.decorators.http import require_POST
 
 from product.models import Product
 from .models import CartItem
@@ -10,7 +11,7 @@ def cart_detail(request):
     cart = get_or_create_cart(request)
     return render(request, 'cart/cart_detail.html', {'cart': cart})
 
-
+@require_POST
 def cart_add(request, product_id):
     product = get_object_or_404(Product, id=product_id, is_active=True)
     cart = get_or_create_cart(request)
@@ -35,10 +36,15 @@ def cart_add(request, product_id):
     return redirect(next_page or 'cart:detail')
 
 
+@require_POST
 def cart_update(request, item_id):
     cart = get_or_create_cart(request)
     item = get_object_or_404(CartItem, id=item_id, cart=cart)
-    quantity = int(request.POST.get('quantity', 1))
+    try:
+        quantity = int(request.POST.get('quantity', 1))
+    except ValueError:
+        messages.error(request, 'مقدار وارد شده نامعتبر است.')
+        return redirect(request.POST.get('next') or 'cart:detail')
     
     if quantity <= 0:
         item.delete()
@@ -54,6 +60,7 @@ def cart_update(request, item_id):
 
     return redirect('cart:detail')
 
+@require_POST
 def cart_remove(request, item_id):
     cart = get_or_create_cart(request)
     item = get_object_or_404(CartItem, id=item_id, cart=cart)

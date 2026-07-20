@@ -3,7 +3,7 @@ from decouple import config, Csv
 
 SECRET_KEY = config('SECRET_KEY', 'default_secret_key')
 
-DEBUG = config('DEBUG', True, cast=bool)
+DEBUG = config('DEBUG', False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
@@ -87,7 +87,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fa-ir'
 
 TIME_ZONE = 'UTC'
 
@@ -118,6 +118,6 @@ LOGIN_URL = 'user:login'
 LOGIN_REDIRECT_URL = 'page:home'
 LOGOUT_REDIRECT_URL = 'page:home'
 
-LANGUAGE_CODE = 'fa-ir'
+
 
 USE_I18N = True
