@@ -34,7 +34,7 @@ class Store(SluggedModel):
     )
     is_active = models.BooleanField(
         verbose_name='فعال بودن فروشگاه',
-        default=True
+        default=False
     )
 
     class Meta:

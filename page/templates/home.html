@@ -16,7 +16,7 @@
                             <h1> Digichara </h1>
                             <hr>
                             <p>سایتی برای خرید احمقانه‌ترین و عجیب‌ترین محصولات تاریخ</p>
-                            <a href="" class="btn_1">مشاهده محصولات</a>
+                            <a href="{% url "product:product_list" %}" class="btn_1">مشاهده محصولات</a>
                         </div>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                             <div class="col-lg-5 col-sm-6">
                                 <div class="single_product_content">
                                     <h2> <a href="single-product.html"></a> لوکس ترین لوازم آرایشی و بهداشتی از برند های مطرح دنیا</h2>
-                                    <a href="" class="btn_3">دیدن محصولات</a>
+                                    <a href="{% url 'product:category' 2 %}" class="btn_3">دیدن محصولات</a>
                                 </div>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                             <div class="col-lg-5 col-sm-6">
                                 <div class="single_product_content">
                                     <h2>گجت های هوشمند برای انجام کارهای روزمره از فوت کردن تا نگاه کردن </h2>
-                                    <a href="" class="btn_3">دیدن محصولات</a>
+                                    <a href="{% url 'product:category' 1 %}" class="btn_3">دیدن محصولات</a>
                                 </div>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                             <div class="col-lg-5 col-sm-6">
                                 <div class="single_product_content">
                                     <h2> <a href="single-product.html">پیشرفته ترین و مدرن ترین دستگاه های بروز دنیا برای کسب و کار های متوسط و بزرگ</a> </h2>
-                                    <a href="" class="btn_3">دیدن محصولات</a>
+                                    <a href="{% url 'product:category' 3 %}" class="btn_3">دیدن محصولات</a>
                                 </div>
                             </div>
                         </div>

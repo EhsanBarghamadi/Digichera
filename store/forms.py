@@ -30,3 +30,9 @@ class StoreForm(forms.ModelForm):
                 'placeholder': 'نام فروشگاه را وارد کنید',
             }),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['store_name'].disabled = True
+            self.fields['store_name'].widget.attrs['class'] = 'form-control bg-light'
