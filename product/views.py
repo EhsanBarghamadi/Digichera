@@ -71,7 +71,7 @@ def product_update(request, pk):
             if new_images:
                 product.images.all().delete()
             for img in new_images:
-                    ProductImage.objects.create(product=product, image=img)
+                    ProductImage.objects.create(product=product, title=product.name, image=img)
             messages.success(request, f'محصول {product.name} با موفقیت بروزرسانی شد.')
             return redirect('account:detail')
     else:

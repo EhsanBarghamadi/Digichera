@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
+from .validators import validate_file_size
 from .models import Product, Category
 
 class MultipleFileInput(forms.ClearableFileInput):
@@ -68,9 +69,15 @@ class ProductForm(forms.ModelForm):
     
     def clean(self):
         cleaned_data = super().clean()
-        files = self.cleaned_data.get('image') or []
+        files = cleaned_data.get("image") or []
         
         if len(files) > 3:
             self.add_error('image', 'شما نمی‌توانید بیشتر از ۳ تصویر برای محصول انتخاب کنید.')
-            
+
+        for file in files:
+            try:
+                validate_file_size(file)
+            except ValidationError as e:
+                self.add_error("image", e)
+
         return cleaned_data
