@@ -53,7 +53,7 @@ def product_create(request):
             for f in files:
                 ProductImage.objects.create(product=product, title=product.name, image=f)
             messages.success(request,'محصول شما با موفقیت ایجاد شد')
-            return redirect('account:detail')
+            return redirect('store:detail')
     else:
         form = ProductForm()
     return render(request, 'product/product_form.html', {'form': form})
@@ -73,7 +73,7 @@ def product_update(request, pk):
             for img in new_images:
                     ProductImage.objects.create(product=product, title=product.name, image=img)
             messages.success(request, f'محصول {product.name} با موفقیت بروزرسانی شد.')
-            return redirect('account:detail')
+            return redirect('store:detail')
     else:
         form = ProductForm(instance=product)
     return render(request, 'product/product_form.html', {'form': form})

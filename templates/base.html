@@ -56,10 +56,13 @@
                     <div class="subscribe_part_content" style="direction: rtl">
                         <h2>به روز رسانی و مطالب پیشرفته!</h2>
                         <p>با وارد کردن ایمیل خود در فیلد زیر اخبار و آخرین بروزرسانی ها رو دریافت کنید.</p>
+                    <form method="post" action="{% url 'page:subscribe' %}">
+                        {% csrf_token %}
                         <div class="subscribe_form">
-                            <input type="email" placeholder="ایمیل خود را وارد کنید">
-                            <a href="#" class="btn_1">تایید</a>
+                            <input type="email" name="email" placeholder="ایمیل خود را وارد کنید" required>
+                            <button type="submit" class="btn_1">تایید</button>
                         </div>
+                    </form>
                     </div>
                 </div>
             </div>
