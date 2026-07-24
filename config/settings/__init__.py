@@ -1,6 +1,7 @@
-import os
+from decouple import config
 
-env = os.getenv('DJANGO_ENV', 'dev')
+env = config('DJANGO_ENV', 'dev')
+
 
 if env == 'dev':
     from .dev import *

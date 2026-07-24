@@ -3,7 +3,7 @@ from decouple import config, Csv
 
 SECRET_KEY = config('SECRET_KEY', 'default_secret_key')
 
-DEBUG = config('DEBUG', False, cast=bool)
+DEBUG = config('DEBUG', True, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
@@ -101,13 +101,10 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 MEDIA_URL = '/media/'
-
 MEDIA_ROOT = BASE_DIR / 'media'
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
 STATIC_URL = 'static/'
-
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
@@ -117,7 +114,3 @@ AUTH_USER_MODEL = 'user.CustomUser'
 LOGIN_URL = 'user:login'
 LOGIN_REDIRECT_URL = 'page:home'
 LOGOUT_REDIRECT_URL = 'page:home'
-
-
-
-USE_I18N = True
