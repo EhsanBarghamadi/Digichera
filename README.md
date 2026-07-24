@@ -17,20 +17,20 @@ Sellers open their own stores, list products, and manage orders — customers br
 
 ## Overview
 
-Digichera is a Django-based multi-vendor marketplace, in the spirit of platforms like Digikala or Basalam. Any visitor can register with just a phone number, then act as a **customer** or open a **store** and sell as a **seller**. Customers can add products from several different stores to a single cart; at checkout, that cart is split into one order per store automatically, and stock is validated inside a database transaction to prevent overselling.
+Digichera is a Django-based multi-vendor marketplace, in the spirit of platforms like Digikala or Basalam. Any visitor can register with just a phone number and pick a role — **customer** or **seller** — at signup; sellers can then open a single storefront and start listing products. Customers can add products from several different stores to one cart; at checkout, that cart is split into one order per store automatically, and stock is checked against every item before any order is created.
 
 The project is organized as a set of small, decoupled Django apps rather than one monolith, each owning a single concern (users, stores, products, cart, orders, profiles).
 
 ## Features
 
 - **Phone-based authentication** — custom user model, no username or email required to sign up or log in
-- **Role-aware accounts** — `customer`, `seller`, and `staff` roles on the same user model
-- **Seller storefronts** — each seller owns one `Store`, with an auto-generated slug and a compressed, auto-resized logo
+- **Role-aware accounts** — `customer`, `seller`, and `staff` roles on the same user model, chosen at registration
+- **Seller storefronts** — each seller owns one `Store`, with an auto-generated slug and a compressed, auto-resized logo (via Pillow)
 - **Nested product categories** — a self-referential category tree with cycle protection (`clean()` blocks a category from becoming its own ancestor) and cascading soft-delete
 - **Product catalog** — multiple images per product, with a designated primary image and automatic thumbnailing/compression via Pillow on save
 - **Guest & authenticated carts** — anonymous users get a session-based cart that transparently merges into their account cart on login/register
-- **Multi-vendor checkout** — one cart, split into a separate `Order` per store, each with its own `OrderItem`s and shipping snapshot
-- **Transaction-safe stock handling** — checkout runs inside `transaction.atomic()` and locks product rows with `select_for_update()` on PostgreSQL to prevent race conditions on stock
+- **Multi-vendor checkout** — one cart, split into a separate `Order` per store, each with its own `OrderItem`s and a shipping-address snapshot taken from the customer's profile
+- **Stock-safe checkout** — the whole checkout view runs inside `transaction.atomic()`, re-checks every item's stock right before creating orders, and locks the affected product rows with `select_for_update()` when running on PostgreSQL
 - **Order lifecycle** — `pending → paid → shipped → delivered`, with sellers restricted to valid status transitions on their own store's orders
 - **Search & category filtering** on the product catalog
 - **Access-controlled seller actions** — decorators (`store_required`, `store_owner_required`) guard store/product management views
@@ -103,15 +103,15 @@ SECRET_KEY=your-secret-key
 DEBUG=True
 ALLOWED_HOSTS=127.0.0.1,localhost
 
-# Only required when running against PostgreSQL (prod settings)
-NEW_DB_NAME=digichera
+# Only required when DJANGO_ENV=prod (PostgreSQL)
+DB_NAME=digichera
 DB_USERNAME=postgres
 DB_PASSWORD=postgres
 DB_HOST=localhost
 DB_PORT=5432
 ```
 
-By default the project runs on `config.settings.dev`, which uses SQLite and requires no database setup. Point `DJANGO_SETTINGS_MODULE` at `config.settings.prod` to switch to PostgreSQL with hardened settings for production.
+By default the project runs with SQLite and no extra configuration needed. Set `DJANGO_ENV=prod` in your environment to switch `config/settings/__init__.py` over to `config.settings.prod`, which uses PostgreSQL with the variables above.
 
 ### Run
 
@@ -128,6 +128,10 @@ Visit `http://127.0.0.1:8000/` for the storefront and `http://127.0.0.1:8000/adm
 - Payment gateway integration for the checkout → `page:bank` flow
 - Seller-side product/order dashboards beyond the Django admin
 - REST API layer for a decoupled frontend
+- Automated test suite (unit & integration tests for models, views, and the checkout flow)
+- Caching for frequently-read data (product listing, categories)
+- Pagination on product listing/search and store/order views
+- Throttling/rate-limiting on auth and checkout endpoints
 
 ## License
 
@@ -135,11 +139,11 @@ No license has been chosen for this project yet. Add a `LICENSE` file to specify
 
 ---
 
+<div align="center">
   <br>
   <img src="https://img.shields.io/badge/Status-Work%20in%20Progress-orange?style=for-the-badge&logo=github" alt="Status">
   <br>
-  <b>😎 New features and improvements are on the way! 
-  😅😄😘</b>
-</p>
+  <b>😎 New features and improvements are on the way! 😄</b>
+</div>
 
 Developed by [Ehsan Barghamadi](https://github.com/EhsanBarghamadi)
