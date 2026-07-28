@@ -25,11 +25,11 @@ def subscribe(request):
         email = request.POST.get("email")
         try:
             validator(email)
-            messages.success(request, "ایمیل شما با موفقیت ثبت شد.")
+            messages.success(request, "درخواست شما با موفقیت ثبت شد.")
             return redirect("page:home")
         
         except ValidationError:
-            messages.error(request, "ایمیل وارد شده اشتباه است!")
+            messages.error(request, "اطلاعات وارد شده اشتباه است!")
             return redirect("page:home")
             
     return redirect("page:home")
