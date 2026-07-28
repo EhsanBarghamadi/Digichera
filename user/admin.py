@@ -9,7 +9,7 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreateAdminForm
     form = CustomUserChangeAdminForm
 
-    list_display = ('first_name', 'last_name', 'phone', 'is_staff', 'is_active')
+    list_display = ('first_name', 'last_name', 'role', 'phone', 'is_staff', 'is_active')
     ordering = ('-created_at',)
     search_fields = ("phone", "first_name", "last_name",)
     list_filter = ("is_staff", "is_superuser", "is_active", "groups")
