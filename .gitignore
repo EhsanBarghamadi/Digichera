@@ -77,6 +77,8 @@ cover/
 # Django stuff:
 *.log
 local_settings.py
+staticfiles/
+media/
 
 # Flask stuff:
 instance/
