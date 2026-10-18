@@ -10,4 +10,4 @@ class StoreFactory(factory.django.DjangoModelFactory):
     owner = factory.SubFactory("user.tests.factories.CustomUserFactory", seller=True)
     store_name = factory.Sequence(lambda n: f"store_name_{n}")
     store_phone = factory.Sequence(lambda n: f"0{9000000000 + n}")
-    is_active = factory.Faker("boolean")
+    is_active = True

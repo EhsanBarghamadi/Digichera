@@ -20,5 +20,5 @@ class ProductFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: f"product-{n}")
     description = factory.Faker("sentence")
     price = factory.Faker("random_int", min=10, max=5000)
-    stock = factory.Faker("random_int", min=10, max=5000)
+    stock = 10
     is_active = True
