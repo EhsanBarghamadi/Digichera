@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 
 from user.models import phone_validator, CustomUser
 
+
 @pytest.mark.parametrize(
     "phone",
     [
@@ -148,3 +149,21 @@ def test_create_superuser_raises_error_when_required_flag_is_false(key, value, m
 
     with pytest.raises(ValueError, match=message):
         CustomUser.objects.create_superuser(**data)
+
+
+def test_user_full_name_returns_first_and_last_name():
+    user = CustomUser(first_name="John", last_name="Doe")
+
+    assert user.full_name == "John Doe"
+
+
+def test_user_str_returns_full_name():
+    user = CustomUser(first_name="John", last_name="Doe")
+
+    assert str(user) == "John Doe"
+
+
+def test_user_role_defaults_to_customer():
+    user = CustomUser()
+
+    assert user.role == CustomUser.Roles.CUSTOMER
