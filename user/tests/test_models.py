@@ -2,6 +2,7 @@ import pytest
 from django.core.exceptions import ValidationError
 
 from user.models import phone_validator, CustomUser
+from user.tests.factories import CustomUserFactory
 
 
 @pytest.mark.parametrize(
@@ -167,3 +168,19 @@ def test_user_role_defaults_to_customer():
     user = CustomUser()
 
     assert user.role == CustomUser.Roles.CUSTOMER
+
+
+@pytest.mark.django_db
+def test_create_user_raises_validation_error_for_duplicate_phone():
+    user = CustomUserFactory()
+
+    with pytest.raises(ValidationError) as exc_info:
+        data = {
+            "phone": user.phone,
+            "password": "Password!123",
+            "first_name": "Jane",
+            "last_name": "Doe",
+        }
+        CustomUser.objects.create_user(**data)
+
+    assert "phone" in exc_info.value.message_dict
