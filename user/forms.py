@@ -73,12 +73,17 @@ class CustomUserCreateForm(forms.ModelForm):
     
     def clean(self):
         cleaned_data = super().clean()
+        first_name = cleaned_data.get("first_name")
+        last_name = cleaned_data.get("last_name")
         password = cleaned_data.get('password')
         confirm_password = cleaned_data.get('confirm_password')
         if password and confirm_password and password != confirm_password:
             raise forms.ValidationError('رمز عبور با تکرار آن مطابقت ندارد!')
         if password:
-            validate_password(password)
+            user = self.instance
+            user.first_name = first_name
+            user.last_name = last_name
+            validate_password(password, user)
         return cleaned_data
 
 class CustomUserLoginForm(forms.Form):
