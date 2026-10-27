@@ -11,3 +11,8 @@ def valid_registration_data():
         "last_name": "Doe",
         "role": "customer",
     }
+
+@pytest.fixture()
+def client():
+    from django.test.client import Client
+    return Client()
