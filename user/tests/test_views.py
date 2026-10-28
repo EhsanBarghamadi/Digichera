@@ -6,6 +6,8 @@ from http import HTTPStatus
 from user.models import CustomUser
 from user.forms import CustomUserCreateForm
 from user.tests.factories import CustomUserFactory
+from cart.models import Cart
+from product.tests.factories import ProductFactory
 from pytest_django.asserts import assertTemplateUsed, assertRedirects
 
 
@@ -100,3 +102,34 @@ def test_register_view_successfully_registers_allowed_roles(
     assert response.status_code == HTTPStatus.FOUND
     user = CustomUser.objects.get(phone=valid_registration_data["phone"])
     assert user.role == role
+
+
+@pytest.mark.django_db
+def test_register_view_merges_guest_cart_after_registration(
+    client, valid_registration_data
+):
+    product = ProductFactory()
+
+    cart_add_url = reverse("cart:add", args=[product.id])
+    data = {"quantity": 5}
+
+    response_1 = client.post(cart_add_url, data=data)
+
+    session_key_guest = client.session.session_key
+    cart_guest = Cart.objects.get(session_key=session_key_guest)
+    assertRedirects(response_1, reverse("cart:detail"))
+    assert cart_guest.session_key == client.session.session_key
+    assert any(
+        item.product == product and item.quantity == data["quantity"]
+        for item in cart_guest.items.all()
+    )
+    register_url = reverse("user:register")
+
+    response_2 = client.post(register_url, data=valid_registration_data)
+    with pytest.raises(Cart.DoesNotExist):
+        Cart.objects.get(session_key=session_key_guest)
+    cart_user = Cart.objects.get(user=response_2.wsgi_request.user)
+    assert any(
+        item.product == product and item.quantity == data["quantity"]
+        for item in cart_user.items.all()
+    )
