@@ -10,6 +10,8 @@ from cart.models import Cart
 from product.tests.factories import ProductFactory
 from pytest_django.asserts import assertTemplateUsed, assertRedirects
 
+pytestmark = pytest.mark.django_db
+
 
 def test_register_view_get_renders_registration_page(client):
     register_url = reverse("user:register")
@@ -22,14 +24,12 @@ def test_register_view_get_renders_registration_page(client):
     assertTemplateUsed(response, "user/register.html")
 
 
-@pytest.mark.django_db
 def test_register_view_successfully_registers_user(client, valid_registration_data):
     register_url = reverse("user:register")
 
     response = client.post(register_url, data=valid_registration_data)
 
-    assert response.status_code == HTTPStatus.FOUND
-    assertRedirects(response, reverse("page:home"))
+    assertRedirects(response, reverse("page:home"), fetch_redirect_response=False)
     user = CustomUser.objects.get(phone=valid_registration_data["phone"])
     assert user.role == valid_registration_data["role"]
     assert user.first_name == valid_registration_data["first_name"]
@@ -43,7 +43,6 @@ def test_register_view_successfully_registers_user(client, valid_registration_da
     )
 
 
-@pytest.mark.django_db
 def test_register_view_rejects_staff_role(client, valid_registration_data):
     valid_registration_data["role"] = "staff"
     register_url = reverse("user:register")
@@ -51,13 +50,13 @@ def test_register_view_rejects_staff_role(client, valid_registration_data):
     response = client.post(register_url, data=valid_registration_data)
 
     assert response.status_code == HTTPStatus.OK
-    with pytest.raises(CustomUser.DoesNotExist):
-        CustomUser.objects.get(phone=valid_registration_data["phone"])
+    assert not CustomUser.objects.filter(
+        phone=valid_registration_data["phone"]
+    ).exists()
     form = response.context["form"]
     assert "role" in form.errors
 
 
-@pytest.mark.django_db
 def test_register_view_rejects_invalid_password_confirmation(
     client, valid_registration_data
 ):
@@ -69,13 +68,13 @@ def test_register_view_rejects_invalid_password_confirmation(
     response = client.post(register_url, data=valid_registration_data)
 
     assert response.status_code == HTTPStatus.OK
-    with pytest.raises(CustomUser.DoesNotExist):
-        CustomUser.objects.get(phone=valid_registration_data["phone"])
+    assert not CustomUser.objects.filter(
+        phone=valid_registration_data["phone"]
+    ).exists()
     form = response.context["form"]
     assert "__all__" in form.errors
 
 
-@pytest.mark.django_db
 def test_register_view_rejects_duplicate_phone(client, valid_registration_data):
     user = CustomUserFactory()
     valid_registration_data["phone"] = user.phone
@@ -90,7 +89,6 @@ def test_register_view_rejects_duplicate_phone(client, valid_registration_data):
 
 
 @pytest.mark.parametrize("role", ["customer", "seller"])
-@pytest.mark.django_db
 def test_register_view_successfully_registers_allowed_roles(
     client, valid_registration_data, role
 ):
@@ -104,7 +102,6 @@ def test_register_view_successfully_registers_allowed_roles(
     assert user.role == role
 
 
-@pytest.mark.django_db
 def test_register_view_merges_guest_cart_after_registration(
     client, valid_registration_data
 ):
@@ -116,20 +113,17 @@ def test_register_view_merges_guest_cart_after_registration(
     response_1 = client.post(cart_add_url, data=data)
 
     session_key_guest = client.session.session_key
-    cart_guest = Cart.objects.get(session_key=session_key_guest)
-    assertRedirects(response_1, reverse("cart:detail"))
-    assert cart_guest.session_key == client.session.session_key
-    assert any(
-        item.product == product and item.quantity == data["quantity"]
-        for item in cart_guest.items.all()
-    )
+    assert Cart.objects.filter(session_key=session_key_guest, user=None).exists()
+    assertRedirects(response_1, reverse("cart:detail"), fetch_redirect_response=False)
+
     register_url = reverse("user:register")
 
     response_2 = client.post(register_url, data=valid_registration_data)
-    with pytest.raises(Cart.DoesNotExist):
-        Cart.objects.get(session_key=session_key_guest)
+
+    assert not Cart.objects.filter(session_key=session_key_guest, user=None).exists()
     cart_user = Cart.objects.get(user=response_2.wsgi_request.user)
-    assert any(
-        item.product == product and item.quantity == data["quantity"]
-        for item in cart_user.items.all()
-    )
+    assert cart_user.items.filter(product=product).count() == 1
+    assert cart_user.items.count() == 1
+    user_item = cart_user.items.get(product=product)
+    assert user_item.quantity == data["quantity"]
+    assertRedirects(response_2, reverse("page:home"), fetch_redirect_response=False)
