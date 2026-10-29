@@ -26,10 +26,12 @@ def test_registration_accepts_allowed_roles(valid_registration_data, allowed_rol
     assert form.cleaned_data["role"] == allowed_role
 
 
-@pytest.mark.parametrize("allowed_role", ["staff", "admin"])
-def test_registration_rejects_disallowed_roles(valid_registration_data, allowed_role):
+@pytest.mark.parametrize("disallowed_role", ["staff", "admin"])
+def test_registration_rejects_disallowed_roles(
+    valid_registration_data, disallowed_role
+):
     data = valid_registration_data.copy()
-    data["role"] = allowed_role
+    data["role"] = disallowed_role
     form = CustomUserCreateForm(data=data)
 
     assert form.is_valid() is False
@@ -83,10 +85,19 @@ def test_registration_rejects_duplicate_phone(valid_registration_data):
     assert "phone" in form.errors
 
 
-def test_registration_rejects_password_similar_to_first_name(valid_registration_data):
+@pytest.mark.parametrize(
+    ("attribute", "attribute_value", "password"),
+    [
+        ("first_name", "Ehsan", "EhsanU47"),
+        ("last_name", "Barghamadi", "BarghamadiUn47"),
+    ],
+)
+def test_registration_rejects_password_similar_to_user_attributes(
+    valid_registration_data, attribute, attribute_value, password
+):
     data = valid_registration_data.copy()
-    data["first_name"] = "Ehsan"
-    data["password"] = "Ehsan123"
+    data[attribute] = attribute_value
+    data["password"] = password
     data["confirm_password"] = data["password"]
 
     form = CustomUserCreateForm(data=data)
