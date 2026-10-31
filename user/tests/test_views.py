@@ -4,13 +4,15 @@ from django.urls import reverse
 from django.contrib.messages import get_messages
 from http import HTTPStatus
 from user.models import CustomUser
-from user.forms import CustomUserCreateForm
+from user.forms import CustomUserCreateForm, CustomUserLoginForm
 from user.tests.factories import CustomUserFactory
 from cart.models import Cart
 from product.tests.factories import ProductFactory
 from pytest_django.asserts import assertTemplateUsed, assertRedirects
 
 pytestmark = pytest.mark.django_db
+
+PASSWORD = "StrongPassword!123"
 
 
 def test_register_view_get_renders_registration_page(client):
@@ -127,3 +129,104 @@ def test_register_view_merges_guest_cart_after_registration(
     user_item = cart_user.items.get(product=product)
     assert user_item.quantity == data["quantity"]
     assertRedirects(response_2, reverse("page:home"), fetch_redirect_response=False)
+
+
+def test_login_view_get(client):
+    login_url = reverse("user:login")
+
+    response = client.get(login_url)
+
+    assert response.status_code == HTTPStatus.OK
+    assert "form" in response.context
+    assert isinstance(response.context["form"], CustomUserLoginForm)
+    assertTemplateUsed(response, "user/login.html")
+
+
+def test_login_view_success(client):
+    user = CustomUserFactory(password=PASSWORD)
+
+    login_url = reverse("user:login")
+
+    data = {"phone": user.phone, "password": PASSWORD}
+    response = client.post(login_url, data=data)
+
+    assertRedirects(response, reverse("page:home"), fetch_redirect_response=False)
+    assert response.wsgi_request.user.is_authenticated
+    assert response.wsgi_request.user.id == user.id
+    assert any(
+        item.level_tag == "success" for item in get_messages(response.wsgi_request)
+    )
+
+
+@pytest.mark.parametrize(
+    "phone, user_exists",
+    [
+        ("09123456789", True),
+        ("09123456789", False),
+    ],
+)
+def test_login_view_rejects_invalid_credentials(client, phone, user_exists):
+    if user_exists:
+        CustomUserFactory(phone=phone, password=PASSWORD)
+
+    login_url = reverse("user:login")
+
+    data = {
+        "phone": phone,
+        "password": "WrongPassword",
+    }
+    response = client.post(login_url, data=data)
+
+    assert response.status_code == HTTPStatus.OK
+    assert not response.wsgi_request.user.is_authenticated
+    form = response.context["form"]
+    assert "phone" in form.errors
+    assert form.errors["phone"] == ["شماره موبایل یا رمز عبور اشتباه است."]
+
+
+def test_login_view_inactive_user(client):
+    user = CustomUserFactory(is_active=False, password=PASSWORD)
+
+    login_url = reverse("user:login")
+
+    data = {
+        "phone": user.phone,
+        "password": PASSWORD,
+    }
+    response = client.post(login_url, data=data)
+
+    assert response.status_code == HTTPStatus.OK
+    assert not response.wsgi_request.user.is_authenticated
+    form = response.context["form"]
+    assert "phone" in form.errors
+    assert form.errors["phone"] == ["شماره موبایل یا رمز عبور اشتباه است."]
+
+
+@pytest.mark.parametrize(
+    "missing_field",
+    [
+        "phone",
+        "password",
+    ],
+)
+def test_login_view_rejects_missing_credentials(client, missing_field):
+    login_url = reverse("user:login")
+
+    if missing_field == "phone":
+        data = {
+            "phone": "",
+            "password": PASSWORD,
+        }
+    elif missing_field == "password":
+        user = CustomUserFactory()
+        data = {
+            "phone": user.phone,
+            "password": "",
+        }
+
+    response = client.post(login_url, data=data)
+
+    assert response.status_code == HTTPStatus.OK
+    assert not response.wsgi_request.user.is_authenticated
+    form = response.context["form"]
+    assert missing_field in form.errors
