@@ -7,6 +7,7 @@ from user.models import CustomUser
 from user.forms import CustomUserCreateForm, CustomUserLoginForm
 from user.tests.factories import CustomUserFactory
 from cart.models import Cart
+from cart.tests.factories import CartFactory, CartItemFactory
 from product.tests.factories import ProductFactory
 from pytest_django.asserts import assertTemplateUsed, assertRedirects
 
@@ -230,3 +231,82 @@ def test_login_view_rejects_missing_credentials(client, missing_field):
     assert not response.wsgi_request.user.is_authenticated
     form = response.context["form"]
     assert missing_field in form.errors
+
+
+def test_login_view_merges_guest_cart(client):
+    product = ProductFactory()
+
+    cart_add_url = reverse("cart:add", args=[product.id])
+    data = {"quantity": 5}
+
+    response_1 = client.post(cart_add_url, data=data)
+
+    assertRedirects(response_1, reverse("cart:detail"), fetch_redirect_response=False)
+    session_key_guest = client.session.session_key
+    assert Cart.objects.filter(session_key=session_key_guest, user=None).exists()
+
+    login_url = reverse("user:login")
+
+    user = CustomUserFactory(password=PASSWORD)
+
+    response_2 = client.post(
+        login_url, data={"phone": user.phone, "password": PASSWORD}
+    )
+
+    assert response_2.wsgi_request.user.is_authenticated
+    assert not Cart.objects.filter(session_key=session_key_guest, user=None).exists()
+    cart_user = Cart.objects.get(user=response_2.wsgi_request.user)
+    assert cart_user.items.filter(product=product).count() == 1
+    assert cart_user.items.count() == 1
+    user_item = cart_user.items.get(product=product)
+    assert user_item.quantity == data["quantity"]
+    assertRedirects(response_2, reverse("page:home"), fetch_redirect_response=False)
+
+
+def test_login_view_merges_duplicate_cart_items(client):
+    product = ProductFactory()
+
+    cart_add_url = reverse("cart:add", args=[product.id])
+    data = {"quantity": 3}
+
+    response_1 = client.post(cart_add_url, data=data)
+
+    assertRedirects(response_1, reverse("cart:detail"), fetch_redirect_response=False)
+    session_key_guest = client.session.session_key
+    assert Cart.objects.filter(session_key=session_key_guest, user=None).exists()
+
+    login_url = reverse("user:login")
+
+    user = CustomUserFactory(password=PASSWORD)
+    cart = CartFactory(user=user)
+    cart_item = CartItemFactory(cart=cart, product=product, quantity=2)
+
+    response_2 = client.post(
+        login_url, data={"phone": user.phone, "password": PASSWORD}
+    )
+
+    assert response_2.wsgi_request.user.is_authenticated
+    assert not Cart.objects.filter(session_key=session_key_guest, user=None).exists()
+    cart_user = Cart.objects.get(user=response_2.wsgi_request.user)
+    assert cart_user.items.filter(product=product).count() == 1
+    assert cart_user.items.count() == 1
+    user_item = cart_user.items.get(product=product)
+    assert user_item.quantity == (data["quantity"] + cart_item.quantity)
+    assertRedirects(response_2, reverse("page:home"), fetch_redirect_response=False)
+
+
+def test_login_view_without_guest_cart(client):
+    login_url = reverse("user:login")
+
+    assert client.session.session_key is not None 
+    assert not Cart.objects.filter(session_key=client.session.session_key, user=None).exists()
+
+    user = CustomUserFactory(password=PASSWORD)
+    
+    response = client.post(
+        login_url, data={"phone": user.phone, "password": PASSWORD}
+    )
+
+    assert response.wsgi_request.user.is_authenticated
+    assertRedirects(response, reverse("page:home"), fetch_redirect_response=False)
+    assert not Cart.objects.filter(session_key=client.session.session_key, user=None).exists()
