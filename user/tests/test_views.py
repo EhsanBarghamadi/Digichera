@@ -298,11 +298,11 @@ def test_login_view_merges_duplicate_cart_items(client):
 def test_login_view_without_guest_cart(client):
     login_url = reverse("user:login")
 
-    assert client.session.session_key is not None 
+    assert client.session.session_key is not None
     assert not Cart.objects.filter(session_key=client.session.session_key, user=None).exists()
 
     user = CustomUserFactory(password=PASSWORD)
-    
+
     response = client.post(
         login_url, data={"phone": user.phone, "password": PASSWORD}
     )
@@ -310,3 +310,32 @@ def test_login_view_without_guest_cart(client):
     assert response.wsgi_request.user.is_authenticated
     assertRedirects(response, reverse("page:home"), fetch_redirect_response=False)
     assert not Cart.objects.filter(session_key=client.session.session_key, user=None).exists()
+
+
+def test_logout_view_success(client):
+    user = CustomUserFactory(password=PASSWORD)
+
+    client.force_login(user)
+
+    logout_url = reverse("user:logout")
+
+    response = client.post(logout_url)
+
+    assertRedirects(response, reverse("page:home"), fetch_redirect_response=False)
+    assert not response.wsgi_request.user.is_authenticated
+    assert any(
+        item.level_tag == "info" and item.message == "شما با موفقیت خارج شدید."
+        for item in get_messages(response.wsgi_request)
+    )
+
+
+def test_logout_view_anonymous_user(client):
+    logout_url = reverse("user:logout")
+
+    response = client.post(logout_url)
+
+    assertRedirects(response, reverse("user:login"), fetch_redirect_response=False)
+    assert all(
+        item.message != "شما با موفقیت خارج شدید."
+        for item in get_messages(response.wsgi_request)
+    )
