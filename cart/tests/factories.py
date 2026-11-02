@@ -10,12 +10,6 @@ class CartFactory(factory.django.DjangoModelFactory):
     session_key = None
     user = None
 
-    class Params:
-        with_user = factory.Trait(
-            user=factory.SubFactory("user.tests.factories.CustomUserFactory"),
-            session_key=None,
-        )
-
 
 class CartItemFactory(factory.django.DjangoModelFactory):
     class Meta:
