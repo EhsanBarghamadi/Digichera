@@ -4,6 +4,7 @@ from django.test import RequestFactory
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.contrib.messages.storage.fallback import FallbackStorage
 
+
 @pytest.fixture
 def authenticated_request_factory():
     def make_request(user):
@@ -19,3 +20,8 @@ def authenticated_request_factory():
         return request
 
     return make_request
+
+
+@pytest.fixture(autouse=True)
+def use_tmp_media_root(settings, tmp_path):
+    settings.MEDIA_ROOT = str(tmp_path)
