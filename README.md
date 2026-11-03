@@ -123,15 +123,37 @@ python manage.py runserver
 
 Visit `http://127.0.0.1:8000/` for the storefront and `http://127.0.0.1:8000/admin/` for the admin panel.
 
-## Roadmap / Ideas
+## Roadmap
 
-- Payment gateway integration for the checkout → `page:bank` flow
-- Seller-side product/order dashboards beyond the Django admin
-- REST API layer for a decoupled frontend
-- Automated test suite (unit & integration tests for models, views, and the checkout flow)
-- Caching for frequently-read data (product listing, categories)
-- Pagination on product listing/search and store/order views
-- Throttling/rate-limiting on auth and checkout endpoints
+### Testing (pytest-django + factory-boy)
+- [x] Test infrastructure: isolated test settings, shared fixtures, per-app factories
+- [x] `core`: access-control decorators (`store_required`, `store_owner_required`)
+- [x] `user`: custom user manager, phone validator, profile-creation signal
+- [x] `user`: registration form, register/login/logout views, guest-cart merge on auth
+- [ ] `account`: profile model (avatar processing), file-size validator, profile form
+- [ ] `account`: profile detail/update views
+- [ ] `store`: models (logo processing, slug), validators, forms, create/update/detail views
+- [ ] `product`: category tree (cycle protection, soft-delete cascade), product model, forms, list/detail/search views
+- [ ] `cart`: merge utility, add/update/remove views, cart context
+- [ ] `order`: atomic checkout, stock validation, per-store order split, status transitions
+- [ ] `page`: home and payment (`page:bank`) views
+- [ ] CI pipeline (GitHub Actions: `pytest` + `makemigrations --check`)
+- [ ] Coverage reporting (`pytest-cov`) with a minimum threshold
+
+
+### Features
+- [ ] Pagination on product listing/search and store/order views
+- [ ] Seller-side product deletion
+- [ ] Seller-side product/order dashboards beyond the Django admin
+- [ ] Payment gateway integration for the checkout → `page:bank` flow
+      (replaces the current mock that marks orders as paid immediately)
+
+### Performance & Protection
+- [ ] Caching for frequently-read data (product listing, categories)
+- [ ] Throttling/rate-limiting on auth and checkout endpoints
+
+### API
+- [ ] REST API layer for a decoupled frontend
 
 ## License
 
