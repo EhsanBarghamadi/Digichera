@@ -4,6 +4,7 @@ import os
 import pytest
 from PIL import Image
 from django.core.files.uploadedfile import SimpleUploadedFile
+from user.tests.factories import CustomUserFactory
 
 
 @pytest.fixture
@@ -40,9 +41,7 @@ def image_file_factory():
                 height = int(height * 1.5)
 
         extension = "jpg" if image_format == "JPEG" else "png"
-        content_type = (
-            "image/jpeg" if image_format == "JPEG" else "image/png"
-        )
+        content_type = "image/jpeg" if image_format == "JPEG" else "image/png"
 
         return SimpleUploadedFile(
             f"photo.{extension}",
@@ -51,3 +50,19 @@ def image_file_factory():
         )
 
     return create_image
+
+
+@pytest.fixture
+def valid_profile_form_context():
+    user = CustomUserFactory()
+    data = {
+        "postal_code": "1619614153",
+        "location": "تهران، خیابان پاسداران، کوچه شهید یزدانی، پلاک ۱۲، طبقه سوم",
+    }
+    return user, data
+
+
+@pytest.fixture
+def profile():
+    user = CustomUserFactory()
+    return user.profile
