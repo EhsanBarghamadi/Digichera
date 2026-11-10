@@ -28,7 +28,7 @@ def test_validate_file_size_rejects_file_over_limit():
 def test_validate_file_size_accepts_small_file():
     file = SimpleUploadedFile(
         name="test.txt",
-       content=b"x",
+        content=b"x",
     )
     result = validate_file_size(file)
 
