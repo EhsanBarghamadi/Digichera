@@ -130,7 +130,7 @@ Visit `http://127.0.0.1:8000/` for the storefront and `http://127.0.0.1:8000/adm
 - [x] `core`: access-control decorators (`store_required`, `store_owner_required`)
 - [x] `user`: custom user manager, phone validator, profile-creation signal
 - [x] `user`: registration form, register/login/logout views, guest-cart merge on auth
-- [ ] `account`: profile model (avatar processing), file-size validator, profile form
+- [x] `account`: profile model (avatar processing), file-size validator, profile form
 - [ ] `account`: profile detail/update views
 - [ ] `store`: models (logo processing, slug), validators, forms, create/update/detail views
 - [ ] `product`: category tree (cycle protection, soft-delete cascade), product model, forms, list/detail/search views
