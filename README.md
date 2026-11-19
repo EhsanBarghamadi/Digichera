@@ -10,6 +10,7 @@ Sellers open their own stores, list products, and manage orders — customers br
 [![Django](https://img.shields.io/badge/Django-6.0-092E20?style=flat&logo=django&logoColor=white)](https://www.djangoproject.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-dev-003B57?style=flat&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-prod-4169E1?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](LICENSE)
 
 </div>
 
@@ -24,7 +25,7 @@ The project is organized as a set of small, decoupled Django apps rather than on
 ## Features
 
 - **Phone-based authentication** — custom user model, no username or email required to sign up or log in
-- **Role-aware accounts** — `customer`, `seller`, and `staff` roles on the same user model, chosen at registration
+- **Role-aware accounts** — custom user model with `customer` and `seller` roles chosen at registration, and `staff` access managed securely via the Django admin panel
 - **Seller storefronts** — each seller owns one `Store`, with an auto-generated slug and a compressed, auto-resized logo (via Pillow)
 - **Nested product categories** — a self-referential category tree with cycle protection (`clean()` blocks a category from becoming its own ancestor) and cascading soft-delete
 - **Product catalog** — multiple images per product, with a designated primary image and automatic thumbnailing/compression via Pillow on save
@@ -80,7 +81,7 @@ Digichera/
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/digichera.git
+git clone https://github.com/EhsanBarghamadi/digichera.git
 cd digichera
 
 # Create and activate a virtual environment
@@ -157,7 +158,7 @@ Visit `http://127.0.0.1:8000/` for the storefront and `http://127.0.0.1:8000/adm
 
 ## License
 
-No license has been chosen for this project yet. Add a `LICENSE` file to specify how others may use this code.
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
