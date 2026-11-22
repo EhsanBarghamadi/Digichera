@@ -16,7 +16,7 @@ def test_saving_existing_user_does_not_create_duplicate_profile():
     user = CustomUserFactory()
 
     assert Profile.objects.filter(user=user).exists()
-    
+
     user.save()
 
     assert Profile.objects.filter(user=user).count() == 1

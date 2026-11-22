@@ -8,16 +8,20 @@ validator = EmailValidator()
 
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, "home.html")
+
 
 def about(request):
-    return render(request, 'about.html')
+    return render(request, "about.html")
+
 
 def contact(request):
-    return render(request, 'contact.html')
+    return render(request, "contact.html")
+
 
 def bank(request):
-    return render(request, 'bank.html')
+    return render(request, "bank.html")
+
 
 @require_POST
 def subscribe(request):
@@ -27,9 +31,9 @@ def subscribe(request):
             validator(email)
             messages.success(request, "درخواست شما با موفقیت ثبت شد.")
             return redirect("page:home")
-        
+
         except ValidationError:
             messages.error(request, "اطلاعات وارد شده اشتباه است!")
             return redirect("page:home")
-            
+
     return redirect("page:home")

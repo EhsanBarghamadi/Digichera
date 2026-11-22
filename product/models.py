@@ -16,42 +16,37 @@ class CategoryQuerySet(models.QuerySet):
         for obj in self:
             obj.delete()
 
+
 class CategoryManager(models.Manager):
     def get_queryset(self):
         return CategoryQuerySet(self.model, using=self._db)
-    
+
+
 class Category(SluggedModel):
-    name = models.CharField(
-        verbose_name='نام دسته بندی',
-        max_length=255,
-        unique=True
-    )
+    name = models.CharField(verbose_name="نام دسته بندی", max_length=255, unique=True)
     parent = models.ForeignKey(
-        'self',
+        "self",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='children',
-        verbose_name='دسته بندی والد'
+        related_name="children",
+        verbose_name="دسته بندی والد",
     )
-    is_active = models.BooleanField(
-        verbose_name='فعال بودن',
-        default=True
-    )
+    is_active = models.BooleanField(verbose_name="فعال بودن", default=True)
 
     class Meta:
-        verbose_name = 'دسته بندی'
-        verbose_name_plural = 'دسته بندی ها'
-        ordering = ['name']
+        verbose_name = "دسته بندی"
+        verbose_name_plural = "دسته بندی ها"
+        ordering = ["name"]
 
     objects = CategoryManager()
 
     def __str__(self):
         return self.name
-    
+
     def get_source_field(self):
-        return 'name'
-    
+        return "name"
+
     def delete(self, *args, **kwargs):
         self.is_active = False
         self.save()
@@ -63,40 +58,33 @@ class Category(SluggedModel):
             p = self.parent
             while p:
                 if p == self:
-                    raise ValidationError('یک دسته‌بندی نمی‌تواند زیرمجموعه‌ی خودش باشد.')
-                p = p.parent 
+                    raise ValidationError(
+                        "یک دسته‌بندی نمی‌تواند زیرمجموعه‌ی خودش باشد."
+                    )
+                p = p.parent
         return super().clean()
 
 
 class ProductImage(TimeStampedModel):
     product = models.ForeignKey(
-        "Product",
-        on_delete=models.CASCADE,
-        related_name='images',
-        verbose_name='محصول'
+        "Product", on_delete=models.CASCADE, related_name="images", verbose_name="محصول"
     )
     image = models.ImageField(
-        verbose_name='تصویر محصول',
-        upload_to='product/%Y/%m/%d/',
-        validators=[validate_file_size]
+        verbose_name="تصویر محصول",
+        upload_to="product/%Y/%m/%d/",
+        validators=[validate_file_size],
     )
-    title = models.CharField(
-        verbose_name='عنوان',
-        max_length=30
-    )
-    is_primary = models.BooleanField(
-        verbose_name='عکس اصلی',
-        default=False
-    )
+    title = models.CharField(verbose_name="عنوان", max_length=30)
+    is_primary = models.BooleanField(verbose_name="عکس اصلی", default=False)
 
     class Meta:
-        verbose_name = 'تصویر محصول'
-        verbose_name_plural = 'تصویر محصولات'
-        ordering = ['-created_at']
+        verbose_name = "تصویر محصول"
+        verbose_name_plural = "تصویر محصولات"
+        ordering = ["-created_at"]
 
     def __str__(self):
         return self.title
-    
+
     def save(self, *args, **kwargs):
         should_process_image = False
 
@@ -113,17 +101,17 @@ class ProductImage(TimeStampedModel):
 
         if should_process_image and self.image:
             img = Image.open(self.image)
-            if img.mode != 'RGB':
-                img = img.convert('RGB')
+            if img.mode != "RGB":
+                img = img.convert("RGB")
             img.thumbnail((600, 600), Image.LANCZOS)
             output = BytesIO()
-            img.save(output, format='JPEG', quality=70, optimize=True)
+            img.save(output, format="JPEG", quality=70, optimize=True)
             output.seek(0)
 
             self.image.save(
                 os.path.basename(self.image.name),
                 ContentFile(output.read()),
-                save=False
+                save=False,
             )
         super().save(*args, **kwargs)
 
@@ -132,52 +120,37 @@ class Product(SluggedModel):
     store = models.ForeignKey(
         "store.Store",
         on_delete=models.CASCADE,
-        related_name='products',
-        verbose_name='فروشگاه'
+        related_name="products",
+        verbose_name="فروشگاه",
     )
     category = models.ForeignKey(
-        "Category",
-        related_name='products',
-        on_delete=models.PROTECT
+        "Category", related_name="products", on_delete=models.PROTECT
     )
-    name = models.CharField(
-        verbose_name='نام محصول',
-        max_length=255
-    )
-    description = models.TextField(
-        verbose_name='توضیحات'
-    )
-    price = models.PositiveIntegerField(
-        verbose_name='قیمت'
-    )
-    stock = models.PositiveIntegerField(
-        verbose_name='موجودی انبار'
-    )
-    is_active = models.BooleanField(
-        verbose_name='وضعیت',
-        default=True
-    )
+    name = models.CharField(verbose_name="نام محصول", max_length=255)
+    description = models.TextField(verbose_name="توضیحات")
+    price = models.PositiveIntegerField(verbose_name="قیمت")
+    stock = models.PositiveIntegerField(verbose_name="موجودی انبار")
+    is_active = models.BooleanField(verbose_name="وضعیت", default=True)
 
     class Meta:
-        verbose_name = 'محصول'
-        verbose_name_plural = 'محصولات'
-        ordering = ['store']
+        verbose_name = "محصول"
+        verbose_name_plural = "محصولات"
+        ordering = ["store"]
 
     @property
     def primary_image(self):
         img = self.images.filter(is_primary=True).first()
         if img and img.image:
-                return img.image
-        
+            return img.image
+
         fallback_img = self.images.first()
         if fallback_img and fallback_img.image:
             return fallback_img.image
-            
+
         return None
-    
+
     def __str__(self):
         return self.name
-    
+
     def get_source_field(self):
-        return 'name'
-    
+        return "name"

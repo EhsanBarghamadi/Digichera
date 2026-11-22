@@ -220,9 +220,7 @@ def test_login_view_merges_guest_cart(client, guest_cart_with_product):
 
     user = CustomUserFactory(password=PASSWORD)
 
-    response = client.post(
-        login_url, data={"phone": user.phone, "password": PASSWORD}
-    )
+    response = client.post(login_url, data={"phone": user.phone, "password": PASSWORD})
 
     assertRedirects(response, reverse("page:home"), fetch_redirect_response=False)
     assert response.wsgi_request.user.is_authenticated
@@ -243,9 +241,7 @@ def test_login_view_merges_duplicate_cart_items(client, guest_cart_with_product)
     cart = CartFactory(user=user)
     cart_item = CartItemFactory(cart=cart, product=product, quantity=2)
 
-    response = client.post(
-        login_url, data={"phone": user.phone, "password": PASSWORD}
-    )
+    response = client.post(login_url, data={"phone": user.phone, "password": PASSWORD})
 
     assertRedirects(response, reverse("page:home"), fetch_redirect_response=False)
     assert response.wsgi_request.user.is_authenticated

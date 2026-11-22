@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from .validators import validate_file_size
 from .models import Product, Category
 
+
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
 
@@ -12,6 +13,7 @@ class MultipleFileInput(forms.ClearableFileInput):
         if not upload:
             return None
         return upload
+
 
 class MultipleFileField(forms.ImageField):
     def clean(self, data, initial=None):
@@ -22,60 +24,58 @@ class MultipleFileField(forms.ImageField):
             result = single_file_clean(data, initial)
         return result
 
+
 class ProductForm(forms.ModelForm):
     image = MultipleFileField(
         required=False,
-        label='تصویر محصول',
-        widget=MultipleFileInput(attrs={
-            'class':'form-control',
-            'multiple':True
-        })
+        label="تصویر محصول",
+        widget=MultipleFileInput(attrs={"class": "form-control", "multiple": True}),
     )
     category = forms.ModelChoiceField(
         queryset=Category.objects.filter(is_active=True),
-        label='دسته بندی',
-        widget=forms.Select(attrs={
-            'class':'form-control'
-        }),
-        empty_label='انتخاب دسته بندی'
+        label="دسته بندی",
+        widget=forms.Select(attrs={"class": "form-control"}),
+        empty_label="انتخاب دسته بندی",
     )
+
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'stock', 'category', 'is_active']
+        fields = ["name", "description", "price", "stock", "category", "is_active"]
 
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control', 
-                'placeholder': 'نام محصول'
-                }),
-            'description': forms.Textarea(attrs={
-                'class': 'form-control', 
-                'rows': 3, 
-                'placeholder': 'توضیحات محصول'
-                }),
-            'price': forms.NumberInput(attrs={
-                'class': 'form-control', 
-                }),
-            'stock': forms.NumberInput(attrs={
-                'class': 'form-control'
-                }),
-            'is_active': forms.CheckboxInput(attrs={
-                'class': 'form-check-input'
-            }),
+            "name": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "نام محصول"}
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 3,
+                    "placeholder": "توضیحات محصول",
+                }
+            ),
+            "price": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                }
+            ),
+            "stock": forms.NumberInput(attrs={"class": "form-control"}),
+            "is_active": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
-            self.fields['name'].disabled = True
-            self.fields['name'].widget.attrs['class'] = 'form-control bg-light'
-    
+            self.fields["name"].disabled = True
+            self.fields["name"].widget.attrs["class"] = "form-control bg-light"
+
     def clean(self):
         cleaned_data = super().clean()
         files = cleaned_data.get("image") or []
-        
+
         if len(files) > 3:
-            self.add_error('image', 'شما نمی‌توانید بیشتر از ۳ تصویر برای محصول انتخاب کنید.')
+            self.add_error(
+                "image", "شما نمی‌توانید بیشتر از ۳ تصویر برای محصول انتخاب کنید."
+            )
 
         for file in files:
             try:
