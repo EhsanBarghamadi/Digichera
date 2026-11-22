@@ -116,6 +116,11 @@ class ProductImage(TimeStampedModel):
         super().save(*args, **kwargs)
 
 
+class ProductQuerySet(models.QuerySet):
+    def visible(self):
+        return self.filter(is_active=True, store__is_active=True)
+
+
 class Product(SluggedModel):
     store = models.ForeignKey(
         "store.Store",
@@ -131,6 +136,8 @@ class Product(SluggedModel):
     price = models.PositiveIntegerField(verbose_name="قیمت")
     stock = models.PositiveIntegerField(verbose_name="موجودی انبار")
     is_active = models.BooleanField(verbose_name="وضعیت", default=True)
+
+    objects = ProductQuerySet.as_manager()
 
     class Meta:
         verbose_name = "محصول"

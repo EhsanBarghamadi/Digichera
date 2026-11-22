@@ -14,7 +14,7 @@ def cart_detail(request):
 
 @require_POST
 def cart_add(request, product_id):
-    product = get_object_or_404(Product, id=product_id, is_active=True)
+    product = get_object_or_404(Product.objects.visible(), id=product_id)
     cart = get_or_create_cart(request)
     quantity = int(request.POST.get("quantity", 1))
     next_page = request.POST.get("next") or request.GET.get("next")

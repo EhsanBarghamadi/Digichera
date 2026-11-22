@@ -9,9 +9,7 @@ from .models import Product, ProductImage, Category
 
 
 def product_list(request):
-    products = Product.objects.filter(
-        is_active=True, store__is_active=True
-    ).select_related("store")
+    products = Product.objects.visible().select_related("store")
     categories = Category.objects.filter(is_active=True)
     return render(
         request,
@@ -21,7 +19,7 @@ def product_list(request):
 
 
 def product_category(request, category_id):
-    products = Product.objects.filter(is_active=True, category=category_id)
+    products = Product.objects.visible().filter(category=category_id)
     categories = Category.objects.filter(is_active=True)
     return render(
         request,
@@ -31,7 +29,7 @@ def product_category(request, category_id):
 
 
 def product_search(request):
-    products = Product.objects.filter(is_active=True)
+    products = Product.objects.visible()
     categories = Category.objects.filter(is_active=True)
     query = request.GET.get("q", "")
 
@@ -49,7 +47,7 @@ def product_search(request):
 
 
 def product_detail(request, slug):
-    product = get_object_or_404(Product, slug=slug, is_active=True)
+    product = get_object_or_404(Product.objects.visible(), slug=slug)
     return render(
         request,
         "product/product_detail.html",
