@@ -1,5 +1,10 @@
 -r requirements.txt
 
 black==26.10.1
-pytest==8.2.2
-pytest-django==4.8.0
+factory_boy==3.3.3
+pytest==9.1.1
+pytest-django==4.14.0
+
+# Only needed to regenerate docs/ diagram with `manage.py graph_models`
+# (also requires the Graphviz binary to be installed):
+# pydot==4.0.1

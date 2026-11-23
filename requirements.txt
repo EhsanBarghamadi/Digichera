@@ -1,5 +1,6 @@
-Django==5.0.6
+Django==6.0.3
+django-extensions==4.1
+django-localflavor==5.0
+pillow==12.2.0
+psycopg2-binary==2.9.11
 python-decouple==3.8
-psycopg2-binary==2.9.9
-docker==7.1.0
-requests==2.34.2
