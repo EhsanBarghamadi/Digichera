@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.decorators.http import require_POST
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from product.models import Product
 from .models import CartItem
@@ -14,27 +15,39 @@ def cart_detail(request):
 
 @require_POST
 def cart_add(request, product_id):
-    product = get_object_or_404(Product.objects.visible(), id=product_id)
-    cart = get_or_create_cart(request)
-    quantity = int(request.POST.get("quantity", 1))
-    next_page = request.POST.get("next") or request.GET.get("next")
+    next_url = request.POST.get("next") or request.GET.get("next")
+    is_safe_redirect = next_url and url_has_allowed_host_and_scheme(
+        url=next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    )
 
-    existing_item = CartItem.objects.filter(cart=cart, product=product).first()
-    current_quantity = existing_item.quantity if existing_item else 0
-    new_quantity = current_quantity + quantity
+    if is_safe_redirect or not next_url:
+        product = get_object_or_404(Product.objects.visible(), id=product_id)
+        cart = get_or_create_cart(request)
+        quantity = int(request.POST.get("quantity", 1))
 
-    if new_quantity > product.stock:
-        messages.warning(request, "درخواست شما بیشتر از موجودی انبار است!")
-        return redirect(next_page or "cart:detail")
+        existing_item = CartItem.objects.filter(cart=cart, product=product).first()
+        current_quantity = existing_item.quantity if existing_item else 0
+        new_quantity = current_quantity + quantity
 
-    if existing_item:
-        existing_item.quantity = new_quantity
-        existing_item.save()
-    else:
-        CartItem.objects.create(cart=cart, product=product, quantity=new_quantity)
+        if new_quantity > product.stock:
+            messages.warning(request, "درخواست شما بیشتر از موجودی انبار است!")
+            return redirect(next_url or "cart:detail")
 
-    messages.success(request, f"{product.name} ✖ { quantity } به سبد خرید اضافه کن.")
-    return redirect(next_page or "cart:detail")
+        if existing_item:
+            existing_item.quantity = new_quantity
+            existing_item.save()
+        else:
+            CartItem.objects.create(cart=cart, product=product, quantity=new_quantity)
+
+        messages.success(
+            request, f"{product.name} ✖ { quantity } به سبد خرید اضافه کن."
+        )
+        return redirect(next_url or "cart:detail")
+
+    messages.warning(request, "درخواست نامعتبر است!")
+    return redirect("cart:detail")
 
 
 @require_POST
