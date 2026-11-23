@@ -7,6 +7,7 @@ from django.views.decorators.http import require_POST
 
 from core.decorators import store_required
 from cart.utils import get_or_create_cart
+from store.models import Store
 from product.models import Product
 from cart.models import Cart
 from .models import Order, OrderItem
@@ -20,9 +21,8 @@ def checkout(request):
     cart = get_or_create_cart(request)
 
     Cart.objects.select_for_update().get(pk=cart.pk)
-    items = list(cart.items.select_related("product", "product__store"))
 
-    if not items:
+    if not cart.items.exists():
         messages.info(request, "سبد خرید شما خالی است")
         return redirect("cart:detail")
 
@@ -34,23 +34,44 @@ def checkout(request):
         messages.info(request, "لطفا ابتدا اطلاعات پروفایل خود را تکمیل کنید")
         return redirect("account:update")
 
-    items_by_store = {}
-    for item in items:
-        store = item.product.store
-        items_by_store.setdefault(store, []).append(item)
+    items = list(cart.items.select_related("product", "product__store"))
 
+    store_ids = {item.product.store_id for item in items}
+    product_ids = {item.product_id for item in items}
+
+    locked_stores = {
+        store.pk: store
+        for store in Store.objects.select_for_update()
+        .filter(pk__in=store_ids)
+        .order_by("pk")
+    }
     locked_products = {
         p.pk: p
         for p in Product.objects.select_for_update()
-        .filter(pk__in=[i.product_id for i in items])
+        .filter(pk__in=product_ids)
         .order_by("pk")
     }
 
+    if len(store_ids) != len(locked_stores) or len(product_ids) != len(locked_products):
+        messages.info(
+            request, "مشکلی در پردازش درخواست شما پیش آمده لطفا دوباره تلاش کنید."
+        )
+        return redirect("cart:detail")
+
     for item in items:
         product = locked_products[item.product_id]
+        store = locked_stores[item.product.store_id]
+        if not store.is_active or not product.is_active:
+            messages.info(request, f"امکان خرید محصول {product.name} وجود ندارد!")
+            return redirect("cart:detail")
         if item.quantity > product.stock:
             messages.error(request, f"موجودی {product.name} کافی نیست")
             return redirect("cart:detail")
+
+    items_by_store = {}
+    for item in items:
+        store = locked_stores[item.product.store_id]
+        items_by_store.setdefault(store, []).append(item)
 
     created_order_ids = []
     profile = request.user.profile
