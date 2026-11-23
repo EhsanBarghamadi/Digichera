@@ -25,7 +25,14 @@ def cart_add(request, product_id):
     if is_safe_redirect or not next_url:
         product = get_object_or_404(Product.objects.visible(), id=product_id)
         cart = get_or_create_cart(request)
-        quantity = int(request.POST.get("quantity", 1))
+
+        try:
+            quantity = int(request.POST.get("quantity", 1))
+            if quantity <= 0:
+                raise ValueError
+        except ValueError:
+            messages.warning(request, "درخواست نامعتبر است!")
+            return redirect("cart:detail")
 
         existing_item = CartItem.objects.filter(cart=cart, product=product).first()
         current_quantity = existing_item.quantity if existing_item else 0
