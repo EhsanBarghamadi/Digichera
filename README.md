@@ -74,7 +74,7 @@ Digichera/
 
 ### Prerequisites
 
-- Python 3.x
+- Python 3.12+
 - pip / venv
 
 ### Installation
@@ -88,16 +88,27 @@ cd digichera
 python -m venv venv
 source venv/bin/activate   # Windows: venv\Scripts\activate
 
-# Install dependencies
+# Install dependencies (to run the project)
 pip install -r requirements.txt
 
 # Configure environment variables
 cp .env.example .env
 ```
 
+### Development & Tests
+
+To work on the project and run the test suite, install the development dependencies instead:
+
+```bash
+pip install -r requirements-dev.txt
+
+# Run the tests
+pytest
+```
+
 ### Environment Variables
 
-Edit `.env` with your own values:
+Create your `.env` by copying `.env.example` (`cp .env.example .env`), then edit it with your own values:
 
 ```env
 SECRET_KEY=your-secret-key
